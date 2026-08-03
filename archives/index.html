@@ -1,340 +1,316 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
-<meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 8.1.2">
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 
-<link rel="stylesheet" href="/css/main.css">
+  
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#fcfcfb" media="(prefers-color-scheme: light)" id="tc-light">
+  <meta name="theme-color" content="#171715" media="(prefers-color-scheme: dark)" id="tc-dark">
 
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var key  = 'quiet-theme';
 
-<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+      root.classList.add('js');
 
-<script id="hexo-configurations">
-    var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"xiincs.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+      var saved = null;
+      try { saved = localStorage.getItem(key); } catch (err) {}
+
+      var tcLight = document.getElementById('tc-light');
+      var tcDark  = document.getElementById('tc-dark');
+      var colors  = { light: '#fcfcfb', dark: '#171715' };
+
+      function syncChrome(mode) {
+        if (tcLight && tcDark) {
+          var c = colors[mode] || null;
+          tcLight.content = c || '#fcfcfb';
+          tcDark.content  = c || '#171715';
+        }
+      }
+
+      if (saved === 'light' || saved === 'dark') {
+        root.setAttribute('data-theme', saved);
+        syncChrome(saved);
+      }
+
+      function wire() {
+        var btn = document.getElementById('theme');
+        if (!btn) return;
+
+        var state = document.getElementById('theme-state');
+
+        function paint(mode) {
+          if (mode) root.setAttribute('data-theme', mode);
+          else root.removeAttribute('data-theme');
+
+          if (state) state.textContent = btn.getAttribute('data-' + (mode || 'auto'));
+
+          syncChrome(mode);
+
+          try {
+            if (mode) localStorage.setItem(key, mode);
+            else localStorage.removeItem(key);
+          } catch (err) {}
+        }
+
+        btn.addEventListener('click', function () {
+          var cur     = root.getAttribute('data-theme') || '';
+          var sysDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          if (cur === '') paint(sysDark ? 'light' : 'dark');
+          else if (cur === 'light') paint('dark');
+          else paint('');
+        });
+
+        paint(root.getAttribute('data-theme') || '');
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', wire);
+      } else {
+        wire();
+      }
+    })();
   </script>
 
-  <meta property="og:type" content="website">
-<meta property="og:title" content="xiincs - blog">
+  <title>Archive · xiincs</title>
+  <meta name="description" content="xiin的个人博客">
+  <meta name="author" content="xiincs">
+  
+
+  <meta name="description" content="xiin的个人博客">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Archive · xiincs">
 <meta property="og:url" content="https://xiincs.github.io/archives/index.html">
-<meta property="og:site_name" content="xiincs - blog">
-<meta property="og:locale">
+<meta property="og:site_name" content="xiincs">
+<meta property="og:description" content="xiin的个人博客">
+<meta property="og:locale" content="en_US">
 <meta property="article:author" content="xiincs">
 <meta name="twitter:card" content="summary">
-
-<link rel="canonical" href="https://xiincs.github.io/archives/">
-
-
-<script id="page-configurations">
-  // https://hexo.io/docs/variables.html
-  CONFIG.page = {
-    sidebar: "",
-    isHome : false,
-    isPost : false,
-    lang   : 'zh'
-  };
-</script>
-
-  <title>الأرشيف | xiincs - blog</title>
+  
+  <link rel="canonical" href="https://xiincs.github.io/archives/index.html">
+  <link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
   
 
+  <link rel="stylesheet" href="/css/style.css">
+  
 
+<meta name="generator" content="Hexo 8.1.2"></head>
 
+<body data-quiet="copy anchor ext"
+      data-copy="Copy"
+      data-copied="Copied"
+      data-copyfail="Press Ctrl+C"
+      data-anchor="Link to this section">
 
+  
 
+  <a class="skip" href="#main">Skip to content</a>
 
-  <noscript>
-  <style>
-  .use-motion .brand,
-  .use-motion .menu-item,
-  .sidebar-inner,
-  .use-motion .post-block,
-  .use-motion .pagination,
-  .use-motion .comments,
-  .use-motion .post-header,
-  .use-motion .post-body,
-  .use-motion .collection-header { opacity: initial; }
-
-  .use-motion .site-title,
-  .use-motion .site-subtitle {
-    opacity: initial;
-    top: initial;
-  }
-
-  .use-motion .logo-line-before i { left: initial; }
-  .use-motion .logo-line-after i { right: initial; }
-  </style>
-</noscript>
-
-</head>
-
-<body itemscope itemtype="http://schema.org/WebPage">
-  <div class="container use-motion">
-    <div class="headband"></div>
-
-    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-container">
-  <div class="site-nav-toggle">
-    <div class="toggle" aria-label="تشغيل شريط التصفح">
-      <span class="toggle-line toggle-line-first"></span>
-      <span class="toggle-line toggle-line-middle"></span>
-      <span class="toggle-line toggle-line-last"></span>
-    </div>
-  </div>
-
-  <div class="site-meta">
-
-    <a href="/" class="brand" rel="start">
-      <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">xiincs - blog</h1>
-      <span class="logo-line-after"><i></i></span>
+  <header class="nav" id="nav">
+  <div class="wrap nav__in">
+    <a class="nav__brand" href="/">
+      <span class="nav__mark" aria-hidden="true"></span>
+      <span class="nav__name">xiincs</span>
     </a>
-  </div>
 
-  <div class="site-nav-right">
-    <div class="toggle popup-trigger">
-    </div>
-  </div>
-</div>
-
-
-
-
-<nav class="site-nav">
-  <ul id="menu" class="main-menu menu">
-        <li class="menu-item menu-item-home">
-
-    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
-
-  </li>
-        <li class="menu-item menu-item-archives">
-
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>الأرشيفات</a>
-
-  </li>
-  </ul>
-</nav>
-
-
-
-
-</div>
-    </header>
-
-    
-  <div class="back-to-top">
-    <i class="fa fa-arrow-up"></i>
-    <span>0%</span>
-  </div>
-
-
-    <main class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          
-
-          <div class="content archive">
-            
-
-  
-  
-  
-  <div class="post-block">
-    <div class="posts-collapse">
-      <div class="collection-title">
-        <span class="collection-header">هِم..! مقالٌ واحد. واصل الكتابة.</span>
-      </div>
+    <div class="nav__right">
+      <nav class="nav__links" aria-label="Site navigation">
+        
+          <a class="nav__link"
+             href="/">Home</a>
+        
+          <a class="nav__link is-on"
+             href="/archives/" aria-current=&#34;page&#34;>Archive</a>
+        
+          <a class="nav__link"
+             href="/categories/">Categories</a>
+        
+          <a class="nav__link"
+             href="/tags/">Tags</a>
+        
+      </nav>
 
       
-    <div class="collection-year">
-      <span class="collection-header">2026</span>
-    </div>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2026-06-11T19:26:42+08:00"
-              content="2026-06-11">
-          06-11
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2026/06/11/hello-world/" itemprop="url">
-            <span itemprop="name">Hello World</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-
+        
+        <button class="theme" id="theme" type="button"
+                data-auto="Auto"
+                data-light="Light"
+                data-dark="Dark">
+          <svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true" focusable="false">
+            <g class="theme__ico theme__ico--auto">
+              <circle cx="8" cy="8" r="5.6" fill="none" stroke="currentColor" stroke-width="1.4"/>
+              <path d="M8 2.4a5.6 5.6 0 0 0 0 11.2z" fill="currentColor"/>
+            </g>
+            <g class="theme__ico theme__ico--light"
+               fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
+              <circle cx="8" cy="8" r="3.1"/>
+              <path d="M8 1.3v1.3M8 13.4v1.3M14.7 8h-1.3M2.6 8H1.3M12.74 3.26l-.92.92M4.18 11.82l-.92.92M12.74 12.74l-.92-.92M4.18 4.18l-.92-.92"/>
+            </g>
+            <g class="theme__ico theme__ico--dark">
+              <path d="M14 8.53A6 6 0 1 1 7.47 2 4.67 4.67 0 0 0 14 8.53z"
+                    fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+            </g>
+          </svg>
+          
+          <span class="sr-only" id="theme-state" aria-live="polite">Auto</span>
+        </button>
+      
     </div>
   </div>
-  
-  
-  
-
-  
+</header>
 
 
+  <main class="main" id="main">
 
-          </div>
+<section class="wrap page-head">
+  
+  <h1 class="page-head__title">Archive</h1>
+  <p class="page-head__meta">5 posts</p>
+</section>
+
+<section class="wrap">
+  
+
+
+
+  <div class="list">
+    
+      <div class="year">
+        <span class="year__n">2026</span>
+        <span class="year__rule"></span>
+      </div>
+    
+
+      <a class="item" href="/2026/07/18/tmp-preview-a/">
+        <time class="item__date" datetime="2026-07-18T02:20:00.000Z">07-18</time>
+
+        <div class="item__body">
+          <h2 class="item__title">关于缓存失效，我踩过的三个坑<span class="item__arrow" aria-hidden="true">→</span></h2>
+
           
+          <p class="item__desc">命名和缓存失效是计算机科学里的两大难题。前者只是难看，后者会真的把线上打挂。</p>
 
-<script>
-  window.addEventListener('tabs:register', () => {
-    let { activeClass } = CONFIG.comments;
-    if (CONFIG.comments.storage) {
-      activeClass = localStorage.getItem('comments_active') || activeClass;
-    }
-    if (activeClass) {
-      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
-      if (activeTab) {
-        activeTab.click();
-      }
-    }
-  });
-  if (CONFIG.comments.storage) {
-    window.addEventListener('tabs:click', event => {
-      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
-      let commentClass = event.target.classList[1];
-      localStorage.setItem('comments_active', commentClass);
-    });
-  }
-</script>
-
+          
+            <div class="item__tags">
+              <span class="pill">缓存</span><span class="pill">后端</span><span class="pill">复盘</span>
+            </div>
+          
         </div>
+      </a>
+    
+
+      <a class="item" href="/2026/06/11/hello-world/">
+        <time class="item__date" datetime="2026-06-11T11:26:42.838Z">06-11</time>
+
+        <div class="item__body">
+          <h2 class="item__title">Hello World<span class="item__arrow" aria-hidden="true">→</span></h2>
+
           
-  
-  <div class="toggle sidebar-toggle">
-    <span class="toggle-line toggle-line-first"></span>
-    <span class="toggle-line toggle-line-middle"></span>
-    <span class="toggle-line toggle-line-last"></span>
+          <p class="item__desc">Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when…</p>
+
+          
+        </div>
+      </a>
+    
+
+      <a class="item" href="/2026/05/02/tmp-preview-b/">
+        <time class="item__date" datetime="2026-05-02T01:00:00.000Z">05-02</time>
+
+        <div class="item__body">
+          <h2 class="item__title">我把编辑器配置删光之后<span class="item__arrow" aria-hidden="true">→</span></h2>
+
+          
+          <p class="item__desc">积攒了四年的配置文件，某天被我一次性清空了。结果是两周的不适应，和之后半年的轻松。</p>
+
+          
+            <div class="item__tags">
+              <span class="pill">编辑器</span><span class="pill">效率</span>
+            </div>
+          
+        </div>
+      </a>
+    
+      <div class="year">
+        <span class="year__n">2025</span>
+        <span class="year__rule"></span>
+      </div>
+    
+
+      <a class="item" href="/2025/11/11/tmp-preview-c/">
+        <time class="item__date" datetime="2025-11-11T13:30:00.000Z">11-11</time>
+
+        <div class="item__body">
+          <h2 class="item__title">读《Thinking in Systems》<span class="item__arrow" aria-hidden="true">→</span></h2>
+
+          
+          <p class="item__desc">系统的行为由结构决定，而不是由参与者的意愿决定。这本书用一百多页反复讲这一件事。</p>
+
+          
+            <div class="item__tags">
+              <span class="pill">系统</span><span class="pill">阅读</span>
+            </div>
+          
+        </div>
+      </a>
+    
+
+      <a class="item" href="/2025/08/27/tmp-preview-d/">
+        <time class="item__date" datetime="2025-08-27T06:05:00.000Z">08-27</time>
+
+        <div class="item__body">
+          <h2 class="item__title">一次没有必要的重构<span class="item__arrow" aria-hidden="true">→</span></h2>
+
+          
+          <p class="item__desc">花了三周把一个能跑的模块改成了「更干净」的样子，然后发现没有人需要它变干净。</p>
+
+          
+            <div class="item__tags">
+              <span class="pill">复盘</span><span class="pill">重构</span>
+            </div>
+          
+        </div>
+      </a>
+    
   </div>
 
-  <aside class="sidebar">
-    <div class="sidebar-inner">
 
-      <ul class="sidebar-nav motion-element">
-        <li class="sidebar-nav-toc">
-          المحتويات
-        </li>
-        <li class="sidebar-nav-overview">
-          عام
-        </li>
-      </ul>
+  
 
-      <!--noindex-->
-      <div class="post-toc-wrap sidebar-panel">
-      </div>
-      <!--/noindex-->
+</section>
+</main>
 
-      <div class="site-overview-wrap sidebar-panel">
-        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-  <p class="site-author-name" itemprop="name">xiincs</p>
-  <div class="site-description" itemprop="description"></div>
-</div>
-<div class="site-state-wrap motion-element">
-  <nav class="site-state">
-      <div class="site-state-item site-state-posts">
-          <a href="/archives/">
-        
-          <span class="site-state-item-count">1</span>
-          <span class="site-state-item-name">المقالات</span>
-        </a>
-      </div>
-  </nav>
-</div>
-
-
-
-      </div>
-
+  
+<footer class="foot">
+  <div class="wrap foot__in">
+    <div class="foot__left">
+      
+      <p class="foot__copy">© 2026 xiincs</p>
     </div>
-  </aside>
-  <div id="sidebar-dimmer"></div>
 
-
-      </div>
-    </main>
-
-    <footer class="footer">
-      <div class="footer-inner">
-        
-
-        
-
-<div class="copyright">
-  
-  &copy; 
-  <span itemprop="copyrightYear">2026</span>
-  <span class="with-love">
-    <i class="fa fa-heart"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">xiincs</span>
-</div>
-  <div class="powered-by">تطبيق الموقع <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+    <div class="foot__right">
+      
+        <a class="foot__link" href="https://github.com/xiincs" target="_blank" rel="noopener noreferrer">GitHub</a>
+      
+      
+        <a class="foot__link foot__link--dim" href="https://hexo.io" target="_blank" rel="noopener noreferrer">Hexo</a>
+      
+    </div>
   </div>
-
-        
-
-
-
-
-
-
-
-
-      </div>
-    </footer>
-  </div>
-
-  
-  <script src="/lib/anime.min.js"></script>
-  <script src="/lib/velocity/velocity.min.js"></script>
-  <script src="/lib/velocity/velocity.ui.min.js"></script>
-
-<script src="/js/utils.js"></script>
-
-<script src="/js/motion.js"></script>
-
-
-<script src="/js/schemes/muse.js"></script>
-
-
-<script src="/js/next-boot.js"></script>
-
-
+</footer>
 
 
   
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    <button class="totop" id="totop" type="button" aria-label="Back to top">
+      <svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true" focusable="false">
+        <path d="M8 3.6l5.2 5.2-1.1 1.1L8.8 6.8V13h-1.6V6.8L3.9 9.9 2.8 8.8z" fill="currentColor"/>
+      </svg>
+    </button>
   
 
-  
-
+  <script src="/js/main.js" defer></script>
 </body>
 </html>

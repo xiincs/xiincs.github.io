@@ -76,22 +76,27 @@
     })();
   </script>
 
-  <title>xiincs · You Only Look Once</title>
+  <title>关于缓存失效，我踩过的三个坑 · xiincs</title>
   <meta name="description" content="xiin的个人博客">
   <meta name="author" content="xiincs">
   
 
   <meta name="description" content="xiin的个人博客">
-<meta property="og:type" content="website">
-<meta property="og:title" content="xiincs · You Only Look Once">
-<meta property="og:url" content="https://xiincs.github.io/index.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关于缓存失效，我踩过的三个坑 · xiincs">
+<meta property="og:url" content="https://xiincs.github.io/2026/07/18/tmp-preview-a/index.html">
 <meta property="og:site_name" content="xiincs">
 <meta property="og:description" content="xiin的个人博客">
 <meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2026-07-18T02:20:00.000Z">
+<meta property="article:modified_time" content="2026-08-03T16:19:57.856Z">
 <meta property="article:author" content="xiincs">
+<meta property="article:tag" content="后端">
+<meta property="article:tag" content="复盘">
+<meta property="article:tag" content="缓存">
 <meta name="twitter:card" content="summary">
   
-  <link rel="canonical" href="https://xiincs.github.io/index.html">
+  <link rel="canonical" href="https://xiincs.github.io/2026/07/18/tmp-preview-a/">
   <link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
   
 
@@ -107,6 +112,8 @@
       data-anchor="Link to this section">
 
   
+    <div class="progress" id="progress" aria-hidden="true"><i></i></div>
+  
 
   <a class="skip" href="#main">Skip to content</a>
 
@@ -120,8 +127,8 @@
     <div class="nav__right">
       <nav class="nav__links" aria-label="Site navigation">
         
-          <a class="nav__link is-on"
-             href="/" aria-current=&#34;page&#34;>Home</a>
+          <a class="nav__link"
+             href="/">Home</a>
         
           <a class="nav__link"
              href="/archives/">Archive</a>
@@ -166,124 +173,93 @@
 
   <main class="main" id="main">
 
+<article class="post">
+  <header class="wrap post__head">
+    
+      <p class="post__kicker">
+        <a href="/categories/%E5%B7%A5%E7%A8%8B%E7%AC%94%E8%AE%B0/">工程笔记</a>
+      </p>
+    
 
-  <section class="hero">
-    <div class="wrap">
-      <h1 class="hero__title">把想清楚的事情，写下来。</h1>
-      <p class="hero__sub">关于代码、工具，以及一些还没想明白的日常。</p>
+    <h1 class="post__title">关于缓存失效，我踩过的三个坑</h1>
+
+    <div class="post__meta">
+      
+      <time datetime="2026-07-18T02:20:00.000Z"><span class="sr-only">Posted on </span>2026-07-18</time>
+      
+        <span class="dot" aria-hidden="true">·</span>
+        <span>351 words</span>
+      
+      
+        <span class="dot" aria-hidden="true">·</span>
+        <span>1 min read</span>
+      
+      
+        <span class="dot" aria-hidden="true">·</span>
+        <span>Updated 2026-08-04</span>
+      
     </div>
-  </section>
+  </header>
 
+  <div class="wrap prose" id="content"><p>命名和缓存失效是计算机科学里的两大难题。前者只是难看，后者会真的把线上打挂。</p>
+<span id="more"></span>
 
-<section class="wrap">
-  
+<h2 id="第一个坑：把-TTL-当成正确性保证"><a href="#第一个坑：把-TTL-当成正确性保证" class="headerlink" title="第一个坑：把 TTL 当成正确性保证"></a>第一个坑：把 TTL 当成正确性保证</h2><p>TTL 只是一个上界，它不保证任何时刻的数据是新的。写代码时如果心里想的是「反正 5 分钟后就一致了」，那这 5 分钟内发生什么就完全没有设计。</p>
+<blockquote>
+<p>缓存是性能优化手段，不是一致性手段。一旦开始用它兜正确性，问题就只会往后拖。</p>
+</blockquote>
+<h2 id="第二个坑：批量失效打穿数据库"><a href="#第二个坑：批量失效打穿数据库" class="headerlink" title="第二个坑：批量失效打穿数据库"></a>第二个坑：批量失效打穿数据库</h2><p>一批 key 同时过期，请求会在同一秒全部落到下游。加一点随机抖动就能摊平：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">ttlWithJitter</span>(<span class="params">base, spread = <span class="number">0.1</span></span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> delta = base * spread;</span><br><span class="line">  <span class="keyword">return</span> <span class="title class_">Math</span>.<span class="title function_">round</span>(base + (<span class="title class_">Math</span>.<span class="title function_">random</span>() * <span class="number">2</span> - <span class="number">1</span>) * delta);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 300 秒的基准 TTL，实际落在 270–330 之间</span></span><br><span class="line">cache.<span class="title function_">set</span>(key, value, <span class="title function_">ttlWithJitter</span>(<span class="number">300</span>));</span><br></pre></td></tr></table></figure>
 
+<h2 id="第三个坑：忘了缓存也会存错误"><a href="#第三个坑：忘了缓存也会存错误" class="headerlink" title="第三个坑：忘了缓存也会存错误"></a>第三个坑：忘了缓存也会存错误</h2><p>下游超时返回了空数组，被原样写进缓存，然后这个空结果稳定服务了十分钟。空结果要么不缓存，要么用一个明显更短的 TTL。</p>
+<table>
+<thead>
+<tr>
+<th>场景</th>
+<th>建议 TTL</th>
+<th>理由</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>正常结果</td>
+<td>5–15 分钟</td>
+<td>常规读多写少</td>
+</tr>
+<tr>
+<td>空结果</td>
+<td>30 秒</td>
+<td>大概率是异常</td>
+</tr>
+<tr>
+<td>下游报错</td>
+<td>不缓存</td>
+<td>不要固化故障</td>
+</tr>
+</tbody></table>
+<p>参考 <a target="_blank" rel="noopener" href="https://aws.amazon.com/caching/">Caching Strategies</a> 里的分类，比自己拍脑袋靠谱。</p>
+</div>
 
-
-  <div class="list">
+  <footer class="wrap post__foot">
     
-      <div class="year">
-        <span class="year__n">2026</span>
-        <span class="year__rule"></span>
+      <div class="post__tags">
+        <a class="pill pill--link" href="/tags/%E7%BC%93%E5%AD%98/">缓存</a><a class="pill pill--link" href="/tags/%E5%90%8E%E7%AB%AF/">后端</a><a class="pill pill--link" href="/tags/%E5%A4%8D%E7%9B%98/">复盘</a>
       </div>
     
 
-      <a class="item" href="/2026/07/18/tmp-preview-a/">
-        <time class="item__date" datetime="2026-07-18T02:20:00.000Z">07-18</time>
-
-        <div class="item__body">
-          <h2 class="item__title">关于缓存失效，我踩过的三个坑<span class="item__arrow" aria-hidden="true">→</span></h2>
-
-          
-          <p class="item__desc">命名和缓存失效是计算机科学里的两大难题。前者只是难看，后者会真的把线上打挂。</p>
-
-          
-            <div class="item__tags">
-              <span class="pill">缓存</span><span class="pill">后端</span><span class="pill">复盘</span>
-            </div>
-          
-        </div>
-      </a>
     
+      <nav class="nextprev" aria-label="Archive">
+        <span></span>
 
-      <a class="item" href="/2026/06/11/hello-world/">
-        <time class="item__date" datetime="2026-06-11T11:26:42.838Z">06-11</time>
-
-        <div class="item__body">
-          <h2 class="item__title">Hello World<span class="item__arrow" aria-hidden="true">→</span></h2>
-
-          
-          <p class="item__desc">Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when…</p>
-
-          
-        </div>
-      </a>
+        
+          <a class="nextprev__card nextprev__card--r" href="/2026/06/11/hello-world/" rel="next">
+            <span class="nextprev__label">Older post <span aria-hidden="true">→</span></span>
+            <span class="nextprev__title">Hello World</span>
+          </a>
+        
+      </nav>
     
-
-      <a class="item" href="/2026/05/02/tmp-preview-b/">
-        <time class="item__date" datetime="2026-05-02T01:00:00.000Z">05-02</time>
-
-        <div class="item__body">
-          <h2 class="item__title">我把编辑器配置删光之后<span class="item__arrow" aria-hidden="true">→</span></h2>
-
-          
-          <p class="item__desc">积攒了四年的配置文件，某天被我一次性清空了。结果是两周的不适应，和之后半年的轻松。</p>
-
-          
-            <div class="item__tags">
-              <span class="pill">编辑器</span><span class="pill">效率</span>
-            </div>
-          
-        </div>
-      </a>
-    
-      <div class="year">
-        <span class="year__n">2025</span>
-        <span class="year__rule"></span>
-      </div>
-    
-
-      <a class="item" href="/2025/11/11/tmp-preview-c/">
-        <time class="item__date" datetime="2025-11-11T13:30:00.000Z">11-11</time>
-
-        <div class="item__body">
-          <h2 class="item__title">读《Thinking in Systems》<span class="item__arrow" aria-hidden="true">→</span></h2>
-
-          
-          <p class="item__desc">系统的行为由结构决定，而不是由参与者的意愿决定。这本书用一百多页反复讲这一件事。</p>
-
-          
-            <div class="item__tags">
-              <span class="pill">系统</span><span class="pill">阅读</span>
-            </div>
-          
-        </div>
-      </a>
-    
-
-      <a class="item" href="/2025/08/27/tmp-preview-d/">
-        <time class="item__date" datetime="2025-08-27T06:05:00.000Z">08-27</time>
-
-        <div class="item__body">
-          <h2 class="item__title">一次没有必要的重构<span class="item__arrow" aria-hidden="true">→</span></h2>
-
-          
-          <p class="item__desc">花了三周把一个能跑的模块改成了「更干净」的样子，然后发现没有人需要它变干净。</p>
-
-          
-            <div class="item__tags">
-              <span class="pill">复盘</span><span class="pill">重构</span>
-            </div>
-          
-        </div>
-      </a>
-    
-  </div>
-
-
-  
-
-</section>
+  </footer>
+</article>
 </main>
 
   

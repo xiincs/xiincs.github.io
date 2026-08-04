@@ -55,6 +55,9 @@
             if (mode) localStorage.setItem(key, mode);
             else localStorage.removeItem(key);
           } catch (err) {}
+
+          
+          document.dispatchEvent(new CustomEvent('quiet:theme', { detail: mode || 'auto' }));
         }
 
         btn.addEventListener('click', function () {
@@ -100,7 +103,7 @@
 
 <meta name="generator" content="Hexo 8.1.2"></head>
 
-<body data-quiet="copy anchor ext"
+<body data-quiet="copy anchor ext toc shortcut"
       data-copy="Copy"
       data-copied="Copied"
       data-copyfail="Press Ctrl+C"
@@ -167,12 +170,65 @@
   <main class="main" id="main">
 
 
-  <section class="hero">
-    <div class="wrap">
-      <h1 class="hero__title">把想清楚的事情，写下来。</h1>
-      <p class="hero__sub">关于代码、工具，以及一些还没想明白的日常。</p>
+  
+
+<section class="hero">
+  <div class="wrap hero__in">
+    <div class="hero__main">
+      <h1 class="hero__title" style="animation-delay:0ms">把想清楚的事情，写下来。</h1>
+      <p class="hero__sub" style="animation-delay:60ms">关于代码、工具，以及一些还没想明白的日常。</p>
+
+      <p class="hero__stats" style="animation-delay:120ms">
+        <span class="stat-n" data-count="5">0</span> posts · <span class="stat-n" data-count="3">0</span> categories · <span class="stat-n" data-count="343">0</span> days running · <span class="stat-n" data-count="630">0</span> words
+      </p>
+
+      
+        <div class="hero__rhythm" style="animation-delay:160ms" aria-hidden="true">
+          
+            <span class="hero__rhythm-dot" style="left:0.00%"></span>
+          
+            <span class="hero__rhythm-dot" style="left:23.49%"></span>
+          
+            <span class="hero__rhythm-dot" style="left:76.28%"></span>
+          
+            <span class="hero__rhythm-dot" style="left:88.73%"></span>
+          
+            <span class="hero__rhythm-dot" style="left:100.00%"></span>
+          
+        </div>
+      
+
+      <a class="hero__random" id="hero-random" href="/archives/" style="animation-delay:200ms">
+        Random post <span aria-hidden="true">→</span>
+      </a>
     </div>
-  </section>
+
+    
+      <div class="hero__cats" style="animation-delay:100ms">
+        
+          <a class="cat-card" href="/categories/%E5%B7%A5%E7%A8%8B%E7%AC%94%E8%AE%B0/" style="animation-delay:140ms">
+            <span class="cat-card__deco" aria-hidden="true">工</span>
+            <span class="cat-card__name">工程笔记</span>
+            <span class="cat-card__n">2 posts</span>
+          </a>
+        
+          <a class="cat-card" href="/categories/%E5%B7%A5%E5%85%B7/" style="animation-delay:190ms">
+            <span class="cat-card__deco" aria-hidden="true">工</span>
+            <span class="cat-card__name">工具</span>
+            <span class="cat-card__n">1 post</span>
+          </a>
+        
+          <a class="cat-card" href="/categories/%E8%AF%BB%E4%B9%A6/" style="animation-delay:240ms">
+            <span class="cat-card__deco" aria-hidden="true">读</span>
+            <span class="cat-card__name">读书</span>
+            <span class="cat-card__n">1 post</span>
+          </a>
+        
+      </div>
+    
+  </div>
+</section>
+
 
 
 <section class="wrap">
@@ -312,6 +368,23 @@
         <path d="M8 3.6l5.2 5.2-1.1 1.1L8.8 6.8V13h-1.6V6.8L3.9 9.9 2.8 8.8z" fill="currentColor"/>
       </svg>
     </button>
+  
+
+  
+    
+<div class="shortcuts" id="shortcuts" aria-hidden="true">
+  <p class="shortcuts__label">Shortcuts</p>
+  <ul class="shortcuts__list">
+    <li><kbd>Shift</kbd><span>+</span><kbd>T</kbd><span class="shortcuts__text">Toggle theme</span></li>
+    <li><kbd>Shift</kbd><span>+</span><kbd>H</kbd><span class="shortcuts__text">Go home</span></li>
+    <li><kbd>Shift</kbd><span>+</span><kbd>R</kbd><span class="shortcuts__text">Random post</span></li>
+  </ul>
+</div>
+
+  
+
+  
+    <script type="application/json" id="post-index">["/2026/06/11/hello-world/","/2026/05/02/tmp-preview-b/","/2026/07/18/tmp-preview-a/","/2025/08/27/tmp-preview-d/","/2025/11/11/tmp-preview-c/"]</script>
   
 
   <script src="/js/main.js" defer></script>

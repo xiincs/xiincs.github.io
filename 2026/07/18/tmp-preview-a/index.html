@@ -55,6 +55,9 @@
             if (mode) localStorage.setItem(key, mode);
             else localStorage.removeItem(key);
           } catch (err) {}
+
+          
+          document.dispatchEvent(new CustomEvent('quiet:theme', { detail: mode || 'auto' }));
         }
 
         btn.addEventListener('click', function () {
@@ -105,7 +108,7 @@
 
 <meta name="generator" content="Hexo 8.1.2"></head>
 
-<body data-quiet="copy anchor ext"
+<body data-quiet="copy anchor ext toc shortcut"
       data-copy="Copy"
       data-copied="Copied"
       data-copyfail="Press Ctrl+C"
@@ -201,6 +204,30 @@
     </div>
   </header>
 
+  
+<nav class="toc" aria-label="Contents">
+  <p class="toc__label">Contents</p>
+  <ol class="toc__list">
+    
+      <li>
+        <a class="toc__link" href="#第一个坑：把-TTL-当成正确性保证" data-toc-id="第一个坑：把-TTL-当成正确性保证" title="第一个坑：把 TTL 当成正确性保证">第一个坑：把 TTL 当成正确性保证</a>
+        
+      </li>
+    
+      <li>
+        <a class="toc__link" href="#第二个坑：批量失效打穿数据库" data-toc-id="第二个坑：批量失效打穿数据库" title="第二个坑：批量失效打穿数据库">第二个坑：批量失效打穿数据库</a>
+        
+      </li>
+    
+      <li>
+        <a class="toc__link" href="#第三个坑：忘了缓存也会存错误" data-toc-id="第三个坑：忘了缓存也会存错误" title="第三个坑：忘了缓存也会存错误">第三个坑：忘了缓存也会存错误</a>
+        
+      </li>
+    
+  </ol>
+</nav>
+
+
   <div class="wrap prose" id="content"><p>命名和缓存失效是计算机科学里的两大难题。前者只是难看，后者会真的把线上打挂。</p>
 <span id="more"></span>
 
@@ -247,6 +274,22 @@
     
 
     
+<section class="related" aria-label="Related posts">
+  <p class="related__label">Related posts</p>
+  <ul class="related__list">
+    
+      <li>
+        <a class="related__link" href="/2025/08/27/tmp-preview-d/">
+          <span class="related__title">一次没有必要的重构<span class="item__arrow" aria-hidden="true">→</span></span>
+          <time class="related__date" datetime="2025-08-27T06:05:00.000Z">2025-08-27</time>
+        </a>
+      </li>
+    
+  </ul>
+</section>
+
+
+    
       <nav class="nextprev" aria-label="Archive">
         <span></span>
 
@@ -260,6 +303,11 @@
     
   </footer>
 </article>
+
+
+
+
+
 </main>
 
   
@@ -288,6 +336,23 @@
         <path d="M8 3.6l5.2 5.2-1.1 1.1L8.8 6.8V13h-1.6V6.8L3.9 9.9 2.8 8.8z" fill="currentColor"/>
       </svg>
     </button>
+  
+
+  
+    
+<div class="shortcuts" id="shortcuts" aria-hidden="true">
+  <p class="shortcuts__label">Shortcuts</p>
+  <ul class="shortcuts__list">
+    <li><kbd>Shift</kbd><span>+</span><kbd>T</kbd><span class="shortcuts__text">Toggle theme</span></li>
+    <li><kbd>Shift</kbd><span>+</span><kbd>H</kbd><span class="shortcuts__text">Go home</span></li>
+    <li><kbd>Shift</kbd><span>+</span><kbd>R</kbd><span class="shortcuts__text">Random post</span></li>
+  </ul>
+</div>
+
+  
+
+  
+    <script type="application/json" id="post-index">["/2026/06/11/hello-world/","/2026/05/02/tmp-preview-b/","/2026/07/18/tmp-preview-a/","/2025/08/27/tmp-preview-d/","/2025/11/11/tmp-preview-c/"]</script>
   
 
   <script src="/js/main.js" defer></script>

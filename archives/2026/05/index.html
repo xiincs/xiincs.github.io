@@ -55,6 +55,9 @@
             if (mode) localStorage.setItem(key, mode);
             else localStorage.removeItem(key);
           } catch (err) {}
+
+          
+          document.dispatchEvent(new CustomEvent('quiet:theme', { detail: mode || 'auto' }));
         }
 
         btn.addEventListener('click', function () {
@@ -100,7 +103,7 @@
 
 <meta name="generator" content="Hexo 8.1.2"></head>
 
-<body data-quiet="copy anchor ext"
+<body data-quiet="copy anchor ext toc shortcut"
       data-copy="Copy"
       data-copied="Copied"
       data-copyfail="Press Ctrl+C"
@@ -236,6 +239,23 @@
         <path d="M8 3.6l5.2 5.2-1.1 1.1L8.8 6.8V13h-1.6V6.8L3.9 9.9 2.8 8.8z" fill="currentColor"/>
       </svg>
     </button>
+  
+
+  
+    
+<div class="shortcuts" id="shortcuts" aria-hidden="true">
+  <p class="shortcuts__label">Shortcuts</p>
+  <ul class="shortcuts__list">
+    <li><kbd>Shift</kbd><span>+</span><kbd>T</kbd><span class="shortcuts__text">Toggle theme</span></li>
+    <li><kbd>Shift</kbd><span>+</span><kbd>H</kbd><span class="shortcuts__text">Go home</span></li>
+    <li><kbd>Shift</kbd><span>+</span><kbd>R</kbd><span class="shortcuts__text">Random post</span></li>
+  </ul>
+</div>
+
+  
+
+  
+    <script type="application/json" id="post-index">["/2026/06/11/hello-world/","/2026/05/02/tmp-preview-b/","/2026/07/18/tmp-preview-a/","/2025/08/27/tmp-preview-d/","/2025/11/11/tmp-preview-c/"]</script>
   
 
   <script src="/js/main.js" defer></script>

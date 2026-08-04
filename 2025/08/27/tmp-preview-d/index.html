@@ -55,6 +55,9 @@
             if (mode) localStorage.setItem(key, mode);
             else localStorage.removeItem(key);
           } catch (err) {}
+
+          
+          document.dispatchEvent(new CustomEvent('quiet:theme', { detail: mode || 'auto' }));
         }
 
         btn.addEventListener('click', function () {
@@ -104,7 +107,7 @@
 
 <meta name="generator" content="Hexo 8.1.2"></head>
 
-<body data-quiet="copy anchor ext"
+<body data-quiet="copy anchor ext toc shortcut"
       data-copy="Copy"
       data-copied="Copied"
       data-copyfail="Press Ctrl+C"
@@ -200,6 +203,8 @@
     </div>
   </header>
 
+  
+
   <div class="wrap prose" id="content"><p>花了三周把一个能跑的模块改成了「更干净」的样子，然后发现没有人需要它变干净。</p>
 </div>
 
@@ -209,6 +214,22 @@
         <a class="pill pill--link" href="/tags/%E5%A4%8D%E7%9B%98/">复盘</a><a class="pill pill--link" href="/tags/%E9%87%8D%E6%9E%84/">重构</a>
       </div>
     
+
+    
+<section class="related" aria-label="Related posts">
+  <p class="related__label">Related posts</p>
+  <ul class="related__list">
+    
+      <li>
+        <a class="related__link" href="/2026/07/18/tmp-preview-a/">
+          <span class="related__title">关于缓存失效，我踩过的三个坑<span class="item__arrow" aria-hidden="true">→</span></span>
+          <time class="related__date" datetime="2026-07-18T02:20:00.000Z">2026-07-18</time>
+        </a>
+      </li>
+    
+  </ul>
+</section>
+
 
     
       <nav class="nextprev" aria-label="Archive">
@@ -224,6 +245,11 @@
     
   </footer>
 </article>
+
+
+
+
+
 </main>
 
   
@@ -252,6 +278,23 @@
         <path d="M8 3.6l5.2 5.2-1.1 1.1L8.8 6.8V13h-1.6V6.8L3.9 9.9 2.8 8.8z" fill="currentColor"/>
       </svg>
     </button>
+  
+
+  
+    
+<div class="shortcuts" id="shortcuts" aria-hidden="true">
+  <p class="shortcuts__label">Shortcuts</p>
+  <ul class="shortcuts__list">
+    <li><kbd>Shift</kbd><span>+</span><kbd>T</kbd><span class="shortcuts__text">Toggle theme</span></li>
+    <li><kbd>Shift</kbd><span>+</span><kbd>H</kbd><span class="shortcuts__text">Go home</span></li>
+    <li><kbd>Shift</kbd><span>+</span><kbd>R</kbd><span class="shortcuts__text">Random post</span></li>
+  </ul>
+</div>
+
+  
+
+  
+    <script type="application/json" id="post-index">["/2026/06/11/hello-world/","/2026/05/02/tmp-preview-b/","/2026/07/18/tmp-preview-a/","/2025/08/27/tmp-preview-d/","/2025/11/11/tmp-preview-c/"]</script>
   
 
   <script src="/js/main.js" defer></script>

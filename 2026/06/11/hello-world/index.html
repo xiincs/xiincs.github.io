@@ -55,6 +55,9 @@
             if (mode) localStorage.setItem(key, mode);
             else localStorage.removeItem(key);
           } catch (err) {}
+
+          
+          document.dispatchEvent(new CustomEvent('quiet:theme', { detail: mode || 'auto' }));
         }
 
         btn.addEventListener('click', function () {
@@ -102,7 +105,7 @@
 
 <meta name="generator" content="Hexo 8.1.2"></head>
 
-<body data-quiet="copy anchor ext"
+<body data-quiet="copy anchor ext toc shortcut"
       data-copy="Copy"
       data-copied="Copied"
       data-copyfail="Press Ctrl+C"
@@ -191,6 +194,32 @@
     </div>
   </header>
 
+  
+<nav class="toc" aria-label="Contents">
+  <p class="toc__label">Contents</p>
+  <ol class="toc__list">
+    
+      <li>
+        <a class="toc__link" href="#Quick-Start" data-toc-id="Quick-Start" title="Quick Start">Quick Start</a>
+        
+          <ol class="toc__list toc__list--sub">
+            
+              <li><a class="toc__link toc__link--sub" href="#Create-a-new-post" data-toc-id="Create-a-new-post" title="Create a new post">Create a new post</a></li>
+            
+              <li><a class="toc__link toc__link--sub" href="#Run-server" data-toc-id="Run-server" title="Run server">Run server</a></li>
+            
+              <li><a class="toc__link toc__link--sub" href="#Generate-static-files" data-toc-id="Generate-static-files" title="Generate static files">Generate static files</a></li>
+            
+              <li><a class="toc__link toc__link--sub" href="#Deploy-to-remote-sites" data-toc-id="Deploy-to-remote-sites" title="Deploy to remote sites">Deploy to remote sites</a></li>
+            
+          </ol>
+        
+      </li>
+    
+  </ol>
+</nav>
+
+
   <div class="wrap prose" id="content"><p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
 <h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
 
@@ -207,6 +236,8 @@
 </div>
 
   <footer class="wrap post__foot">
+    
+
     
 
     
@@ -228,6 +259,11 @@
     
   </footer>
 </article>
+
+
+
+
+
 </main>
 
   
@@ -256,6 +292,23 @@
         <path d="M8 3.6l5.2 5.2-1.1 1.1L8.8 6.8V13h-1.6V6.8L3.9 9.9 2.8 8.8z" fill="currentColor"/>
       </svg>
     </button>
+  
+
+  
+    
+<div class="shortcuts" id="shortcuts" aria-hidden="true">
+  <p class="shortcuts__label">Shortcuts</p>
+  <ul class="shortcuts__list">
+    <li><kbd>Shift</kbd><span>+</span><kbd>T</kbd><span class="shortcuts__text">Toggle theme</span></li>
+    <li><kbd>Shift</kbd><span>+</span><kbd>H</kbd><span class="shortcuts__text">Go home</span></li>
+    <li><kbd>Shift</kbd><span>+</span><kbd>R</kbd><span class="shortcuts__text">Random post</span></li>
+  </ul>
+</div>
+
+  
+
+  
+    <script type="application/json" id="post-index">["/2026/06/11/hello-world/","/2026/05/02/tmp-preview-b/","/2026/07/18/tmp-preview-a/","/2025/08/27/tmp-preview-d/","/2025/11/11/tmp-preview-c/"]</script>
   
 
   <script src="/js/main.js" defer></script>

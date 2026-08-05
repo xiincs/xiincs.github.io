@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+  
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#fcfcfb" media="(prefers-color-scheme: light)" id="tc-light">
+  <meta name="theme-color" content="#171715" media="(prefers-color-scheme: dark)" id="tc-dark">
+
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var key  = 'quiet-theme';
+
+      root.classList.add('js');
+
+      var saved = null;
+      try { saved = localStorage.getItem(key); } catch (err) {}
+
+      var tcLight = document.getElementById('tc-light');
+      var tcDark  = document.getElementById('tc-dark');
+      var colors  = { light: '#fcfcfb', dark: '#171715' };
+
+      function syncChrome(mode) {
+        if (tcLight && tcDark) {
+          var c = colors[mode] || null;
+          tcLight.content = c || '#fcfcfb';
+          tcDark.content  = c || '#171715';
+        }
+      }
+
+      if (saved === 'light' || saved === 'dark') {
+        root.setAttribute('data-theme', saved);
+        syncChrome(saved);
+      }
+
+      function wire() {
+        var btn = document.getElementById('theme');
+        if (!btn) return;
+
+        var state = document.getElementById('theme-state');
+
+        function paint(mode) {
+          if (mode) root.setAttribute('data-theme', mode);
+          else root.removeAttribute('data-theme');
+
+          if (state) state.textContent = btn.getAttribute('data-' + (mode || 'auto'));
+
+          syncChrome(mode);
+
+          try {
+            if (mode) localStorage.setItem(key, mode);
+            else localStorage.removeItem(key);
+          } catch (err) {}
+
+          
+          document.dispatchEvent(new CustomEvent('quiet:theme', { detail: mode || 'auto' }));
+        }
+
+        btn.addEventListener('click', function () {
+          var cur     = root.getAttribute('data-theme') || '';
+          var sysDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          if (cur === '') paint(sysDark ? 'light' : 'dark');
+          else if (cur === 'light') paint('dark');
+          else paint('');
+        });
+
+        paint(root.getAttribute('data-theme') || '');
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', wire);
+      } else {
+        wire();
+      }
+    })();
+  </script>
+
+  <title>Vision Skill 路由设计复盘：从一个 Issue 到四层防护 · xiincs</title>
+  <meta name="description" content="xiin’s blog">
+  <meta name="author" content="xiincs">
+  
+
+  <meta name="description" content="xiin’s blog">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vision Skill 路由设计复盘：从一个 Issue 到四层防护 · xiincs">
+<meta property="og:url" content="https://xiincs.github.io/2026/08/05/20260803-Vision%20Skill%20%E8%B7%AF%E7%94%B1%E8%AE%BE%E8%AE%A1%E5%A4%8D%E7%9B%98%EF%BC%9A%E4%BB%8E%E4%B8%80%E4%B8%AA%20Issue%20%E5%88%B0%E5%9B%9B%E5%B1%82%E9%98%B2%E6%8A%A4/index.html">
+<meta property="og:site_name" content="xiincs">
+<meta property="og:description" content="xiin’s blog">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2026-08-05T02:43:53.064Z">
+<meta property="article:modified_time" content="2026-08-05T03:37:38.365Z">
+<meta property="article:author" content="xiincs">
+<meta property="article:tag" content="Skill">
+<meta property="article:tag" content="claude code">
+<meta property="article:tag" content="开源">
+<meta name="twitter:card" content="summary">
+  
+  <link rel="canonical" href="https://xiincs.github.io/2026/08/05/20260803-Vision%20Skill%20%E8%B7%AF%E7%94%B1%E8%AE%BE%E8%AE%A1%E5%A4%8D%E7%9B%98%EF%BC%9A%E4%BB%8E%E4%B8%80%E4%B8%AA%20Issue%20%E5%88%B0%E5%9B%9B%E5%B1%82%E9%98%B2%E6%8A%A4/">
+  <link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
+  
+
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+<body data-quiet="copy anchor ext toc shortcut"
+      data-copy="Copy"
+      data-copied="Copied"
+      data-copyfail="Press Ctrl+C"
+      data-anchor="Link to this section">
+
+  
+    <div class="progress" id="progress" aria-hidden="true"><i></i></div>
+  
+
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="nav" id="nav">
+  <div class="wrap nav__in">
+    <a class="nav__brand" href="/">
+      <span class="nav__mark" aria-hidden="true"></span>
+      <span class="nav__name">xiincs</span>
+    </a>
+
+    <div class="nav__right">
+      <nav class="nav__links" aria-label="Site navigation">
+        
+          <a class="nav__link"
+             href="/">Home</a>
+        
+          <a class="nav__link"
+             href="/archives/">Archive</a>
+        
+          <a class="nav__link"
+             href="/categories/">Categories</a>
+        
+          <a class="nav__link"
+             href="/tags/">Tags</a>
+        
+      </nav>
+
+      
+        
+        <button class="theme" id="theme" type="button"
+                data-auto="Auto"
+                data-light="Light"
+                data-dark="Dark">
+          <svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true" focusable="false">
+            <g class="theme__ico theme__ico--auto">
+              <circle cx="8" cy="8" r="5.6" fill="none" stroke="currentColor" stroke-width="1.4"/>
+              <path d="M8 2.4a5.6 5.6 0 0 0 0 11.2z" fill="currentColor"/>
+            </g>
+            <g class="theme__ico theme__ico--light"
+               fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
+              <circle cx="8" cy="8" r="3.1"/>
+              <path d="M8 1.3v1.3M8 13.4v1.3M14.7 8h-1.3M2.6 8H1.3M12.74 3.26l-.92.92M4.18 11.82l-.92.92M12.74 12.74l-.92-.92M4.18 4.18l-.92-.92"/>
+            </g>
+            <g class="theme__ico theme__ico--dark">
+              <path d="M14 8.53A6 6 0 1 1 7.47 2 4.67 4.67 0 0 0 14 8.53z"
+                    fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+            </g>
+          </svg>
+          
+          <span class="sr-only" id="theme-state" aria-live="polite">Auto</span>
+        </button>
+      
+    </div>
+  </div>
+</header>
+
+
+  <main class="main" id="main">
+
+<article class="post">
+  <header class="wrap post__head">
+    
+      <p class="post__kicker">
+        <a href="/categories/%E5%B7%A5%E7%A8%8B%E7%AC%94%E8%AE%B0/">工程笔记</a>
+      </p>
+    
+
+    <h1 class="post__title">Vision Skill 路由设计复盘：从一个 Issue 到四层防护</h1>
+
+    <div class="post__meta">
+      
+      <time datetime="2026-08-05T02:43:53.064Z"><span class="sr-only">Posted on </span>2026-08-05</time>
+      
+        <span class="dot" aria-hidden="true">·</span>
+        <span>2,394 words</span>
+      
+      
+        <span class="dot" aria-hidden="true">·</span>
+        <span>8 min read</span>
+      
+      
+    </div>
+  </header>
+
+  
+<nav class="toc" aria-label="Contents">
+  <p class="toc__label">Contents</p>
+  <ol class="toc__list">
+    
+      <li>
+        <a class="toc__link" href="#从一个-issue-说起" data-toc-id="从一个-issue-说起" title="从一个 issue 说起">从一个 issue 说起</a>
+        
+      </li>
+    
+      <li>
+        <a class="toc__link" href="#六次推翻" data-toc-id="六次推翻" title="六次推翻">六次推翻</a>
+        
+      </li>
+    
+      <li>
+        <a class="toc__link" href="#转折点：发现-SessionStart-hook" data-toc-id="转折点：发现-SessionStart-hook" title="转折点：发现 SessionStart hook">转折点：发现 SessionStart hook</a>
+        
+      </li>
+    
+      <li>
+        <a class="toc__link" href="#手动安装测试：一个漏掉的边界" data-toc-id="手动安装测试：一个漏掉的边界" title="手动安装测试：一个漏掉的边界">手动安装测试：一个漏掉的边界</a>
+        
+      </li>
+    
+      <li>
+        <a class="toc__link" href="#总结一下" data-toc-id="总结一下" title="总结一下">总结一下</a>
+        
+      </li>
+    
+  </ol>
+</nav>
+
+
+  <div class="wrap prose" id="content"><p>“vision routing” 功能从提出到修复的完整过程。</p>
+<span id="more"></span>
+
+<blockquote>
+<p>相关项目： <a target="_blank" rel="noopener" href="https://github.com/xiincs/claude-code-vision-skill">claude-code-vision-skill</a></p>
+</blockquote>
+<h2 id="从一个-issue-说起"><a href="#从一个-issue-说起" class="headerlink" title="从一个 issue 说起"></a>从一个 issue 说起</h2><p>事情始于 <a target="_blank" rel="noopener" href="https://github.com/xiincs/claude-code-vision-skill/issues/4">issue #4</a>。提出者的场景很具体：这个 skill 原本是为纯文本模型（比如 DeepSeek）外挂视觉能力的——截图交给外部视觉模型（豆包&#x2F;Qwen&#x2F;GPT-4o）分析，再把文字描述喂回主模型。但用户会通过 CC Switch 之类的代理，在纯文本模型和原生多模态模型之间来回切换。问题是：项目当时的机制是把一段”必须用截图+视觉模型分析”的强制规则合并进 <code>~/.claude/CLAUDE.md</code>，这段规则合并进去之后就是无条件生效的——不管背后到底是不是原生多模态模型，主模型都会被迫调用外部视觉工具，造成重复分析、多余延迟和成本。</p>
+<p>Issue 里已经预判了一个关键陷阱：<strong>不要指望让模型自己判断”我有没有原生视觉能力”</strong>，因为真实的模型路由和代理能力，模型自己是看不到的。这句话后来在整个设计过程里反复被验证、反复被违反、又反复被纠正。</p>
+<h2 id="六次推翻"><a href="#六次推翻" class="headerlink" title="六次推翻"></a>六次推翻</h2><p>如果只看最终合并的代码，这个功能看起来是一次性设计好的。但实际过程是连续六次被推翻重来，每一次推翻都对应一个真实的架构漏洞，而不是风格偏好。</p>
+<p><strong>第一版：环境变量 + install.py 开关。</strong> 最初的方案是 <code>VISION_ROUTING=external/native/auto</code> 三态开关，配合 <code>install.py</code> 加 <code>--enable-vision-rules</code>&#x2F;<code>--disable-vision-rules</code> 两个 CLI flag，复用已有的 marker 标记块增删逻辑。<code>auto</code> 模式被否决——Claude Code 是按 Anthropic API 协议写的客户端，代理(CC Switch)会把请求伪装成 Anthropic API 格式转发，这层伪装对 Claude Code 完全不可见。模型没有任何可靠途径确认自己实际连的是谁，不管是读环境变量、自我认知，还是拿一张图片去”测试”自己看不看得懂，都不可靠。</p>
+<p><strong>第二版被推翻： <code>install.py</code> 方案本身的问题。</strong> 用户安装 skill 后，通过 CC Switch 切换厂商，就不会再使用 install 了。<code>install.py</code> 是一次性安装脚本，CC Switch 切换厂商是运行时的高频动作，把开关做成需要重新运行安装脚本的形式，从使用习惯上是错的。</p>
+<p><strong>第三版：把判断挪进 <code>vision.py</code> 运行时。</strong> 改成 <code>vision.py</code> 的 <code>main()</code> 里读 <code>VISION_ROUTING</code> 环境变量，不碰 <code>install.py</code>。这个方案又被推翻，因为 <code>vision.py</code> 仍然建立在 skill 被激活的前提下，我们要解决的是，在非纯文本模型下，不会激活 skill。这是最关键的一次纠偏：<strong>路由</strong>(该用哪个 provider)和<strong>激活</strong>(模型会不会决定去调用这个工具)是两个不同阶段，<code>vision.py</code> 内部的检查只在工具已经被调用之后才生效，而”要不要调用”这个决定，在那之前就已经由 CLAUDE.md 的无条件强制指令做出了。等 vision.py 判断”其实不用做”，激活早就发生了，只是变成一次白跑的空调用。</p>
+<p><strong>第四版：CLAUDE.md 本身变成条件判断文本。</strong> 于是把判断逻辑往前挪，写进 CLAUDE.md 的指令文本里(“先检查 VISION_ROUTING，若 native 则跳过”)。这一步引出了一个问题：VISION_ROUTING 会自动修改吗？答案是不会，之前设想的”它会跟着 CC Switch 一起被带上”只是没验证过的假设。查了 CC Switch 的实际机制后确认它不提供这种自定义变量透传的保证，这个坑被记录下来，而不是继续往前堆设计。</p>
+<p><strong>第五版：黑名单思路 + <code>vision.py --check-routing</code>。</strong> 与其维护一直膨胀的多模态白名单，不如维护黑名单，名单小得多，并且关键是能拿到 <code>ANTHROPIC_MODEL</code> 环境变量做匹配。这个思路本身是对的，但藏着一个陷阱：如果黑名单被用来”推断出 native”，一旦漏判一个新出的纯文本模型，就会静默跳过整个视觉检查流程。于是设定一条规则：<strong>黑名单只能把结果推向更保守的 <code>external</code>，永远不能推出 <code>native</code></strong>，也就是命中时强制外部分析，没命中时什么也不改变。顺便把判断逻辑收进 <code>vision.py</code> 一个 <code>--check-routing</code> 命令，让 CLAUDE.md 直接调用它。</p>
+<p><strong>第六版修正：CLAUDE.md 不该引用任何 skill 内部细节。</strong> CLAUDE.md 是无条件、每条消息都在场的全局文件，Skill 系统本身才是设计给”按需加载、按相关性触发”的机制。把 <code>vision.py</code> 的路径和 flag 硬编码进 CLAUDE.md，等于让一个全局文件依赖某个具体 skill 的实现细节，skill 一旦改名&#x2F;迁移，CLAUDE.md 里就留下死引用。于是把职责重新拆开：CLAUDE.md 只保留”必须实际看渲染截图，不能只读代码猜布局”这条与工具无关的通用策略;”要不要调用这个工具”的判断整段移进 <code>vision/SKILL.md</code> 自己的文档里——这原本就是它的分内事，它本来就已经在正文里直接引用同级的 <code>vision.py</code>。</p>
+<h2 id="转折点：发现-SessionStart-hook"><a href="#转折点：发现-SessionStart-hook" class="headerlink" title="转折点：发现 SessionStart hook"></a>转折点：发现 SessionStart hook</h2><p>到第六版为止，还有一个根本缺口没解决——<code>VISION_ROUTING</code> 不会自动变，用户忘记切换就会一直错下去。也许可以去查询 Claude Code 和 CC Switch 有没有什么特性(hooks 等)参考？</p>
+<p>Claude Code 的 <code>SessionStart</code> hook 会在<strong>每次会话开始或恢复时</strong>重新触发，把命令的 stdout 当作上下文注入给模型。这意味着路由判断根本不需要指望”某个静态状态一直不变”，而是可以让判断逻辑<strong>每次会话都从当前环境变量重新算一遍</strong>。</p>
+<p>问题从”怎么让一个开关自动保持正确”变成了”怎么让判断在每次需要时自动重新发生”，这是 Claude Code 自带的能力，不需要 CC Switch 配合。</p>
+<p>最终定型的结构是四层，从自动到兜底：</p>
+<ol>
+<li><strong><code>SessionStart</code> hook</strong>(主路径)：安装时注册一次，之后每次会话自动用当时的环境变量重算路由，不需要用户做任何事。</li>
+<li><strong><code>vision/SKILL.md</code></strong>：”若不确定，运行 <code>--check-routing</code>“ 的兜底指令，防止 hook 未注册或上下文被压缩掉。</li>
+<li><strong><code>vision.py</code> 内部检查</strong>：真正发起外部请求前的最后一道防线。</li>
+<li><strong>黑名单</strong>：贯穿以上三层，单向把结果推向 <code>external</code>，永不推向 <code>native</code>。</li>
+</ol>
+<p>三层共用同一个 <code>resolve_routing()</code> 函数，判断逻辑只有一份。</p>
+<p>这一版实现完之后合并为 <a href="https%EF%BC%9A//github.com/xiincs/claude-code-vision-skill/pull/5">PR #5</a>。</p>
+<h2 id="手动安装测试：一个漏掉的边界"><a href="#手动安装测试：一个漏掉的边界" class="headerlink" title="手动安装测试：一个漏掉的边界"></a>手动安装测试：一个漏掉的边界</h2><p>代码合并之后，在真实使用中很快暴露了一个问题：一个完全没有经过 CC Switch、直接连官方 API 跑 Sonnet 5 的会话，<code>--check-routing</code> 依然报告 <code>external</code>。手动调试发现这台机器这次会话里 <code>ANTHROPIC_BASE_URL</code> 完全没有被设置过，也就是说根本没有代理介入，但路由逻辑还是落到了保守的默认值。</p>
+<p>根本原因是此前的设计只写了”如何识别已知的纯文本模型”(黑名单)，却完全没写”如何识别确定没有代理介入的情况”。两者都不命中时，只能落到 <code>VISION_ROUTING</code> 未设置时的默认值 <code>external</code>，跟实际连的是不是 Sonnet 5 毫无关系。</p>
+<p>解决思路：Anthropic 官方 API 不会提供纯文本模型，只要没有代理把这个地址改写指向别处，后端就一定是原生多模态的。这和黑名单是对称的两端：黑名单证明一定不是 native，新加的这层证明一定是 native，中间那段代理指向其他地址的情况才保留原来的保守默认 <code>external</code>。主机名比较用 <code>urlparse(...).hostname</code> 而不是用子串匹配，避免像 <code>api.anthropic.com.evil.example</code> 这样的拼接域名绕过检测。</p>
+<p>这版修复对应 <a target="_blank" rel="noopener" href="https://github.com/xiincs/claude-code-vision-skill/pull/7">PR #7</a>，补了 8 个新测试覆盖官方 URL&#x2F;未设置 URL 判定为 native、代理 URL 判定为 external、显式设置在两个方向上都能覆盖自动推断、主机名子串攻击防护等场景。修复后直接在本地验证：不设任何环境变量运行 <code>python vision.py --check-routing</code>，输出从 <code>external</code> 变成了 <code>native</code>。手动安装也验证通过。</p>
+<h2 id="总结一下"><a href="#总结一下" class="headerlink" title="总结一下"></a>总结一下</h2><p>回头看整个过程，有几条经验更值得记录：</p>
+<ul>
+<li>安全默认值需要两个方向的信号，不能只做一个方向。</li>
+<li>“模型能不能自己判断”这个问题，答案几乎总是不能，但要分清楚判断的是什么。判断”我是不是原生多模态”是自我认知，不可靠;判断”一个人为设置好的环境变量等不等于某个值”是确定性检查，可靠。不要把这两者混为一谈。</li>
+<li>框架&#x2F;平台自带的机制，通常比自己造的更可靠。折腾了五版之后才想起去查 Claude Code 自己有没有现成的 hook 机制，而 <code>SessionStart</code> 恰好精准地解决了”如何让判断自动保持新鲜”这个自己怎么设计都设计不圆的问题。</li>
+</ul>
+</div>
+
+  <footer class="wrap post__foot">
+    
+      <div class="post__tags">
+        <a class="pill pill--link" href="/tags/%E5%BC%80%E6%BA%90/">开源</a><a class="pill pill--link" href="/tags/Skill/">Skill</a><a class="pill pill--link" href="/tags/claude-code/">claude code</a>
+      </div>
+    
+
+    
+<section class="related" aria-label="Related posts">
+  <p class="related__label">Related posts</p>
+  <ul class="related__list">
+    
+      <li>
+        <a class="related__link" href="/2026/07/18/tmp-preview-a/">
+          <span class="related__title">关于缓存失效，我踩过的三个坑<span class="item__arrow" aria-hidden="true">→</span></span>
+          <time class="related__date" datetime="2026-07-18T02:20:00.000Z">2026-07-18</time>
+        </a>
+      </li>
+    
+      <li>
+        <a class="related__link" href="/2025/08/27/tmp-preview-d/">
+          <span class="related__title">一次没有必要的重构<span class="item__arrow" aria-hidden="true">→</span></span>
+          <time class="related__date" datetime="2025-08-27T06:05:00.000Z">2025-08-27</time>
+        </a>
+      </li>
+    
+  </ul>
+</section>
+
+
+    
+      <nav class="nextprev" aria-label="Archive">
+        <span></span>
+
+        
+          <a class="nextprev__card nextprev__card--r" href="/2026/07/18/tmp-preview-a/" rel="next">
+            <span class="nextprev__label">Older post <span aria-hidden="true">→</span></span>
+            <span class="nextprev__title">关于缓存失效，我踩过的三个坑</span>
+          </a>
+        
+      </nav>
+    
+  </footer>
+</article>
+
+
+
+
+
+</main>
+
+  
+<footer class="foot">
+  <div class="wrap foot__in">
+    <div class="foot__left">
+      
+      <p class="foot__copy">© 2026 xiincs</p>
+    </div>
+
+    <div class="foot__right">
+      
+        <a class="foot__link" href="https://github.com/xiincs" target="_blank" rel="noopener noreferrer">GitHub</a>
+      
+      
+        <a class="foot__link foot__link--dim" href="https://hexo.io" target="_blank" rel="noopener noreferrer">Hexo</a>
+      
+    </div>
+  </div>
+</footer>
+
+
+  
+    <button class="totop" id="totop" type="button" aria-label="Back to top">
+      <svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true" focusable="false">
+        <path d="M8 3.6l5.2 5.2-1.1 1.1L8.8 6.8V13h-1.6V6.8L3.9 9.9 2.8 8.8z" fill="currentColor"/>
+      </svg>
+    </button>
+  
+
+  
+    
+<div class="shortcuts" id="shortcuts" aria-hidden="true">
+  <p class="shortcuts__label">Shortcuts</p>
+  <ul class="shortcuts__list">
+    <li><kbd>Shift</kbd><span>+</span><kbd>T</kbd><span class="shortcuts__text">Toggle theme</span></li>
+    <li><kbd>Shift</kbd><span>+</span><kbd>H</kbd><span class="shortcuts__text">Go home</span></li>
+    <li><kbd>Shift</kbd><span>+</span><kbd>R</kbd><span class="shortcuts__text">Random post</span></li>
+  </ul>
+</div>
+
+  
+
+  
+    <script type="application/json" id="post-index">["/2026/06/11/hello-world/","/2026/08/05/20260803-Vision%20Skill%20%E8%B7%AF%E7%94%B1%E8%AE%BE%E8%AE%A1%E5%A4%8D%E7%9B%98%EF%BC%9A%E4%BB%8E%E4%B8%80%E4%B8%AA%20Issue%20%E5%88%B0%E5%9B%9B%E5%B1%82%E9%98%B2%E6%8A%A4/","/2026/07/18/tmp-preview-a/","/2026/05/02/tmp-preview-b/","/2025/11/11/tmp-preview-c/","/2025/08/27/tmp-preview-d/"]</script>
+  
+
+  <script src="/js/main.js" defer></script>
+</body>
+</html>

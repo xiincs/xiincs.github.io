@@ -13,7 +13,7 @@
   <script>
     (function () {
       var root = document.documentElement;
-      var key  = 'quiet-theme';
+      var key  = 'idyll-theme';
 
       root.classList.add('js');
 
@@ -57,7 +57,7 @@
           } catch (err) {}
 
           
-          document.dispatchEvent(new CustomEvent('quiet:theme', { detail: mode || 'auto' }));
+          document.dispatchEvent(new CustomEvent('idyll:theme', { detail: mode || 'auto' }));
         }
 
         btn.addEventListener('click', function () {
@@ -105,7 +105,7 @@
 
 <meta name="generator" content="Hexo 8.1.2"></head>
 
-<body data-quiet="copy anchor ext toc shortcut"
+<body data-idyll="copy anchor ext toc shortcut"
       data-copy="Copy"
       data-copied="Copied"
       data-copyfail="Press Ctrl+C"
@@ -136,6 +136,9 @@
         
           <a class="nav__link"
              href="/tags/">Tags</a>
+        
+          <a class="nav__link"
+             href="/series/">Series</a>
         
           <a class="nav__link is-on"
              href="/about/" aria-current=&#34;page&#34;>About</a>
@@ -230,7 +233,7 @@
       <h3 class="card__label">In numbers</h3>
       <div class="about__stats">
         <div class="about__stat">
-          <span class="about__stat-n stat-n" data-count="6">0</span>
+          <span class="about__stat-n stat-n" data-count="4">0</span>
           <span class="about__stat-label">Archive</span>
         </div>
         <div class="about__stat">
@@ -238,7 +241,7 @@
           <span class="about__stat-label">Categories</span>
         </div>
         <div class="about__stat">
-          <span class="about__stat-n stat-n" data-count="3024">0</span>
+          <span class="about__stat-n stat-n" data-count="3731">0</span>
           <span class="about__stat-label">words</span>
         </div>
       </div>
@@ -291,7 +294,7 @@
   
 
   
-    <script type="application/json" id="post-index">["/2026/06/11/hello-world/","/2026/07/18/tmp-preview-a/","/2026/05/02/tmp-preview-b/","/2025/08/27/tmp-preview-d/","/2025/11/11/tmp-preview-c/","/2026/08/05/vision-skill-routing-retrospective/"]</script>
+    <script type="application/json" id="post-index">["/2026/04/07/iot-duplicate-alert-redis-distributed-lock/","/2025/11/11/tmp-preview-c/","/2026/05/02/tmp-preview-b/","/2026/08/05/vision-skill-routing-retrospective/"]</script>
   
 
   <script src="/js/main.js" defer></script>

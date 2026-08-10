@@ -13,7 +13,7 @@
   <script>
     (function () {
       var root = document.documentElement;
-      var key  = 'quiet-theme';
+      var key  = 'idyll-theme';
 
       root.classList.add('js');
 
@@ -57,7 +57,7 @@
           } catch (err) {}
 
           
-          document.dispatchEvent(new CustomEvent('quiet:theme', { detail: mode || 'auto' }));
+          document.dispatchEvent(new CustomEvent('idyll:theme', { detail: mode || 'auto' }));
         }
 
         btn.addEventListener('click', function () {
@@ -79,22 +79,22 @@
     })();
   </script>
 
-  <title>重构 · xiincs</title>
+  <title>Archive · xiincs</title>
   <meta name="description" content="xiin’s blog">
   <meta name="author" content="xiincs">
   
 
   <meta name="description" content="xiin’s blog">
 <meta property="og:type" content="website">
-<meta property="og:title" content="重构 · xiincs">
-<meta property="og:url" content="https://xiincs.github.io/tags/%E9%87%8D%E6%9E%84/index.html">
+<meta property="og:title" content="Archive · xiincs">
+<meta property="og:url" content="https://xiincs.github.io/archives/2026/04/index.html">
 <meta property="og:site_name" content="xiincs">
 <meta property="og:description" content="xiin’s blog">
 <meta property="og:locale" content="en_US">
 <meta property="article:author" content="xiincs">
 <meta name="twitter:card" content="summary">
   
-  <link rel="canonical" href="https://xiincs.github.io/tags/%E9%87%8D%E6%9E%84/index.html">
+  <link rel="canonical" href="https://xiincs.github.io/archives/2026/04/index.html">
   <link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
   
 
@@ -103,7 +103,7 @@
 
 <meta name="generator" content="Hexo 8.1.2"></head>
 
-<body data-quiet="copy anchor ext toc shortcut"
+<body data-idyll="copy anchor ext toc shortcut"
       data-copy="Copy"
       data-copied="Copied"
       data-copyfail="Press Ctrl+C"
@@ -126,14 +126,17 @@
           <a class="nav__link"
              href="/">Home</a>
         
-          <a class="nav__link"
-             href="/archives/">Archive</a>
+          <a class="nav__link is-on"
+             href="/archives/" aria-current=&#34;page&#34;>Archive</a>
         
           <a class="nav__link"
              href="/categories/">Categories</a>
         
-          <a class="nav__link is-on"
-             href="/tags/" aria-current=&#34;page&#34;>Tags</a>
+          <a class="nav__link"
+             href="/tags/">Tags</a>
+        
+          <a class="nav__link"
+             href="/series/">Series</a>
         
           <a class="nav__link"
              href="/about/">About</a>
@@ -173,8 +176,8 @@
   <main class="main" id="main">
 
 <section class="wrap page-head">
-  <p class="page-head__kicker">tagged</p>
-  <h1 class="page-head__title">重构</h1>
+  <p class="page-head__kicker">Archive</p>
+  <h1 class="page-head__title">2026.04</h1>
   <p class="page-head__meta">1 post</p>
 </section>
 
@@ -186,23 +189,23 @@
   <div class="list">
     
       <div class="year">
-        <span class="year__n">2025</span>
+        <span class="year__n">2026</span>
         <span class="year__rule"></span>
       </div>
     
 
-      <a class="item" href="/2025/08/27/tmp-preview-d/">
-        <time class="item__date" datetime="2025-08-27T06:05:00.000Z">08-27</time>
+      <a class="item" href="/2026/04/07/iot-duplicate-alert-redis-distributed-lock/">
+        <time class="item__date" datetime="2026-04-06T16:00:00.000Z">04-07</time>
 
         <div class="item__body">
-          <h2 class="item__title">一次没有必要的重构<span class="item__arrow" aria-hidden="true">→</span></h2>
+          <h2 class="item__title">IoT 重复告警与 Redis 分布式锁实践<span class="item__arrow" aria-hidden="true">→</span></h2>
 
           
-          <p class="item__desc">花了三周把一个能跑的模块改成了「更干净」的样子，然后发现没有人需要它变干净。</p>
+          <p class="item__desc">在铁路隐蔽工程智能监测系统中，设备传感器数据上报频率较高时，会出现同一设备的同类型告警被重复创建的问题。这导致告警记录冗余，影响系统的可靠性和用户体验。</p>
 
           
             <div class="item__tags">
-              <span class="pill">复盘</span><span class="pill">重构</span>
+              <span class="pill">Redis</span><span class="pill">分布式</span><span class="pill">高并发</span>
             </div>
           
         </div>
@@ -258,7 +261,7 @@
   
 
   
-    <script type="application/json" id="post-index">["/2026/06/11/hello-world/","/2026/07/18/tmp-preview-a/","/2026/05/02/tmp-preview-b/","/2025/08/27/tmp-preview-d/","/2025/11/11/tmp-preview-c/","/2026/08/05/vision-skill-routing-retrospective/"]</script>
+    <script type="application/json" id="post-index">["/2026/04/07/iot-duplicate-alert-redis-distributed-lock/","/2025/11/11/tmp-preview-c/","/2026/05/02/tmp-preview-b/","/2026/08/05/vision-skill-routing-retrospective/"]</script>
   
 
   <script src="/js/main.js" defer></script>

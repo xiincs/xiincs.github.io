@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+  
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#fcfcfb" media="(prefers-color-scheme: light)" id="tc-light">
+  <meta name="theme-color" content="#171715" media="(prefers-color-scheme: dark)" id="tc-dark">
+
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var key  = 'idyll-theme';
+
+      root.classList.add('js');
+
+      var saved = null;
+      try { saved = localStorage.getItem(key); } catch (err) {}
+
+      var tcLight = document.getElementById('tc-light');
+      var tcDark  = document.getElementById('tc-dark');
+      var colors  = { light: '#fcfcfb', dark: '#171715' };
+
+      function syncChrome(mode) {
+        if (tcLight && tcDark) {
+          var c = colors[mode] || null;
+          tcLight.content = c || '#fcfcfb';
+          tcDark.content  = c || '#171715';
+        }
+      }
+
+      if (saved === 'light' || saved === 'dark') {
+        root.setAttribute('data-theme', saved);
+        syncChrome(saved);
+      }
+
+      function wire() {
+        var btn = document.getElementById('theme');
+        if (!btn) return;
+
+        var state = document.getElementById('theme-state');
+
+        function paint(mode) {
+          if (mode) root.setAttribute('data-theme', mode);
+          else root.removeAttribute('data-theme');
+
+          if (state) state.textContent = btn.getAttribute('data-' + (mode || 'auto'));
+
+          syncChrome(mode);
+
+          try {
+            if (mode) localStorage.setItem(key, mode);
+            else localStorage.removeItem(key);
+          } catch (err) {}
+
+          
+          document.dispatchEvent(new CustomEvent('idyll:theme', { detail: mode || 'auto' }));
+        }
+
+        btn.addEventListener('click', function () {
+          var cur     = root.getAttribute('data-theme') || '';
+          var sysDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          if (cur === '') paint(sysDark ? 'light' : 'dark');
+          else if (cur === 'light') paint('dark');
+          else paint('');
+        });
+
+        paint(root.getAttribute('data-theme') || '');
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', wire);
+      } else {
+        wire();
+      }
+    })();
+  </script>
+
+  <title>IoT 重复告警与 Redis 分布式锁实践 · xiincs</title>
+  <meta name="description" content="xiin’s blog">
+  <meta name="author" content="xiincs">
+  
+
+  <meta name="description" content="xiin’s blog">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IoT 重复告警与 Redis 分布式锁实践 · xiincs">
+<meta property="og:url" content="https://xiincs.github.io/2026/04/07/iot-duplicate-alert-redis-distributed-lock/index.html">
+<meta property="og:site_name" content="xiincs">
+<meta property="og:description" content="xiin’s blog">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2026-04-06T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-08-10T07:46:05.077Z">
+<meta property="article:author" content="xiincs">
+<meta property="article:tag" content="Redis">
+<meta property="article:tag" content="分布式">
+<meta property="article:tag" content="高并发">
+<meta name="twitter:card" content="summary">
+  
+  <link rel="canonical" href="https://xiincs.github.io/2026/04/07/iot-duplicate-alert-redis-distributed-lock/">
+  <link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
+  
+
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+<body data-idyll="copy anchor ext toc shortcut"
+      data-copy="Copy"
+      data-copied="Copied"
+      data-copyfail="Press Ctrl+C"
+      data-anchor="Link to this section">
+
+  
+    <div class="progress" id="progress" aria-hidden="true"><i></i></div>
+  
+
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="nav" id="nav">
+  <div class="wrap nav__in">
+    <a class="nav__brand" href="/">
+      <span class="nav__mark" aria-hidden="true"></span>
+      <span class="nav__name">xiincs</span>
+    </a>
+
+    <div class="nav__right">
+      <nav class="nav__links" aria-label="Site navigation">
+        
+          <a class="nav__link"
+             href="/">Home</a>
+        
+          <a class="nav__link"
+             href="/archives/">Archive</a>
+        
+          <a class="nav__link"
+             href="/categories/">Categories</a>
+        
+          <a class="nav__link"
+             href="/tags/">Tags</a>
+        
+          <a class="nav__link"
+             href="/series/">Series</a>
+        
+          <a class="nav__link"
+             href="/about/">About</a>
+        
+      </nav>
+
+      
+        
+        <button class="theme" id="theme" type="button"
+                data-auto="Auto"
+                data-light="Light"
+                data-dark="Dark">
+          <svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true" focusable="false">
+            <g class="theme__ico theme__ico--auto">
+              <circle cx="8" cy="8" r="5.6" fill="none" stroke="currentColor" stroke-width="1.4"/>
+              <path d="M8 2.4a5.6 5.6 0 0 0 0 11.2z" fill="currentColor"/>
+            </g>
+            <g class="theme__ico theme__ico--light"
+               fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
+              <circle cx="8" cy="8" r="3.1"/>
+              <path d="M8 1.3v1.3M8 13.4v1.3M14.7 8h-1.3M2.6 8H1.3M12.74 3.26l-.92.92M4.18 11.82l-.92.92M12.74 12.74l-.92-.92M4.18 4.18l-.92-.92"/>
+            </g>
+            <g class="theme__ico theme__ico--dark">
+              <path d="M14 8.53A6 6 0 1 1 7.47 2 4.67 4.67 0 0 0 14 8.53z"
+                    fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+            </g>
+          </svg>
+          
+          <span class="sr-only" id="theme-state" aria-live="polite">Auto</span>
+        </button>
+      
+    </div>
+  </div>
+</header>
+
+
+  <main class="main" id="main">
+
+<article class="post">
+  <header class="wrap post__head">
+    
+      <p class="post__kicker">
+        <a href="/categories/%E5%B7%A5%E7%A8%8B%E7%AC%94%E8%AE%B0/">工程笔记</a>
+      </p>
+    
+
+    <h1 class="post__title">IoT 重复告警与 Redis 分布式锁实践</h1>
+
+    <div class="post__meta">
+      
+      <time datetime="2026-04-06T16:00:00.000Z"><span class="sr-only">Posted on </span>2026-04-07</time>
+      
+        <span class="dot" aria-hidden="true">·</span>
+        <span>1,168 words</span>
+      
+      
+        <span class="dot" aria-hidden="true">·</span>
+        <span>4 min read</span>
+      
+      
+        <span class="dot" aria-hidden="true">·</span>
+        <span>Updated 2026-08-10</span>
+      
+    </div>
+  </header>
+
+  
+<nav class="toc" aria-label="Contents">
+  <p class="toc__label">Contents</p>
+  <ol class="toc__list">
+    
+      <li>
+        <a class="toc__link" href="#问题现象" data-toc-id="问题现象" title="问题现象">问题现象</a>
+        
+      </li>
+    
+      <li>
+        <a class="toc__link" href="#根因" data-toc-id="根因" title="根因">根因</a>
+        
+      </li>
+    
+      <li>
+        <a class="toc__link" href="#第一版方案：Redis-加锁" data-toc-id="第一版方案：Redis-加锁" title="第一版方案：Redis 加锁">第一版方案：Redis 加锁</a>
+        
+      </li>
+    
+      <li>
+        <a class="toc__link" href="#但还有个坑" data-toc-id="但还有个坑" title="但还有个坑">但还有个坑</a>
+        
+      </li>
+    
+      <li>
+        <a class="toc__link" href="#终版方案：加锁-重试-回滚" data-toc-id="终版方案：加锁-重试-回滚" title="终版方案：加锁 + 重试 + 回滚">终版方案：加锁 + 重试 + 回滚</a>
+        
+      </li>
+    
+      <li>
+        <a class="toc__link" href="#几个实际考虑" data-toc-id="几个实际考虑" title="几个实际考虑">几个实际考虑</a>
+        
+      </li>
+    
+      <li>
+        <a class="toc__link" href="#效果" data-toc-id="效果" title="效果">效果</a>
+        
+      </li>
+    
+  </ol>
+</nav>
+
+
+  <div class="wrap prose" id="content"><p>在铁路隐蔽工程智能监测系统中，设备传感器数据上报频率较高时，会出现同一设备的同类型告警被重复创建的问题。这导致告警记录冗余，影响系统的可靠性和用户体验。</p>
+<span id="more"></span>
+
+<h2 id="问题现象"><a href="#问题现象" class="headerlink" title="问题现象"></a>问题现象</h2><p>铁路隐蔽工程监测系统上线后，告警表出现了大量重复记录。查日志发现，同一设备、同一类型的告警，在 1 毫秒内被两个线程各创建了一次：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">19:09:35.723 [pool-2-thread-25] 创建告警 - 设备: WT6B00000147, 类型: 振动超限</span><br><span class="line">19:09:35.724 [pool-2-thread-30] 创建告警 - 设备: WT6B00000147, 类型: 振动超限</span><br></pre></td></tr></table></figure>
+
+<p>传感器上报频率高，数据通过线程池并行处理，同一个设备的数据被两个线程同时拿到了。</p>
+<h2 id="根因"><a href="#根因" class="headerlink" title="根因"></a>根因</h2><p>问题出在原来的告警创建逻辑：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (!isActiveAlarmExist(deviceSn, alarmType)) &#123;</span><br><span class="line">    createAlarmRecord(deviceSn, alarmType, alarmValue, thresholdValue);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>isActiveAlarmExist()</code> 查 Redis，<code>createAlarmRecord()</code> 写数据库并设置 Redis key。两个操作不是原子的。</p>
+<p>线程 A 查到”没有告警”，还没写进去，线程 B 也查到”没有告警”，于是两条都写进去了。这就是竞态条件。</p>
+<h2 id="第一版方案：Redis-加锁"><a href="#第一版方案：Redis-加锁" class="headerlink" title="第一版方案：Redis 加锁"></a>第一版方案：Redis 加锁</h2><p>用 Redis 的 <code>setIfAbsent</code> 把”检查”和”占位”合成一步：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Boolean</span> <span class="variable">isNew</span> <span class="operator">=</span> redisTemplate.opsForValue()</span><br><span class="line">    .setIfAbsent(<span class="string">&quot;alarm:active:&quot;</span> + deviceSn + <span class="string">&quot;:&quot;</span> + alarmType, </span><br><span class="line">                 <span class="string">&quot;1&quot;</span>, <span class="number">24</span>, TimeUnit.HOURS);</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (Boolean.TRUE.equals(isNew)) &#123;</span><br><span class="line">    createAlarmRecord(deviceSn, alarmType, alarmValue, thresholdValue);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Redis 单线程执行 <code>setIfAbsent</code>，保证只有一个线程能拿到锁。这步做完，重复告警基本解决了。</p>
+<h2 id="但还有个坑"><a href="#但还有个坑" class="headerlink" title="但还有个坑"></a>但还有个坑</h2><p>Redis 锁设置成功了，数据库写入却失败了怎么办？比如数据库挂了、事务回滚了、网络超时了。</p>
+<p>这时候 Redis 里留着一个 <code>&quot;alarm:active:xxx&quot;</code> 的 key，24 小时内不会过期。后续真实的告警来了，查到 Redis 里有记录，就直接跳过了——<strong>告警被静默丢弃了</strong>。</p>
+<p>这比重复告警更严重。重复顶多是数据脏一点，丢告警是功能缺陷。</p>
+<h2 id="终版方案：加锁-重试-回滚"><a href="#终版方案：加锁-重试-回滚" class="headerlink" title="终版方案：加锁 + 重试 + 回滚"></a>终版方案：加锁 + 重试 + 回滚</h2><p>思路很简单：数据库写入失败时，把 Redis 里的锁删掉。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="type">boolean</span> <span class="title function_">tryCreateAlarm</span><span class="params">(String deviceSn, String alarmType,</span></span><br><span class="line"><span class="params">                               Long value, Long threshold)</span> &#123;</span><br><span class="line">    <span class="type">String</span> <span class="variable">key</span> <span class="operator">=</span> <span class="string">&quot;alarm:active:&quot;</span> + deviceSn + <span class="string">&quot;:&quot;</span> + alarmType;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="type">Boolean</span> <span class="variable">acquired</span> <span class="operator">=</span> redisTemplate.opsForValue()</span><br><span class="line">            .setIfAbsent(key, <span class="string">&quot;1&quot;</span>, <span class="number">24</span>, TimeUnit.HOURS);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (!Boolean.TRUE.equals(acquired)) &#123;</span><br><span class="line">            log.info(<span class="string">&quot;告警已存在，跳过 - deviceSn=&#123;&#125;, type=&#123;&#125;&quot;</span>, deviceSn, alarmType);</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 数据库写入，带重试</span></span><br><span class="line">        <span class="type">boolean</span> <span class="variable">success</span> <span class="operator">=</span> insertWithRetry(deviceSn, alarmType, value, threshold);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (success) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// 数据库没写进去，Redis 锁不能留着</span></span><br><span class="line">            redisTemplate.delete(key);</span><br><span class="line">            log.warn(<span class="string">&quot;数据库写入失败，已回滚 Redis 锁 - key=&#123;&#125;&quot;</span>, key);</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">        <span class="comment">// Redis 挂了，降级直接写库，宁可重复也不能丢</span></span><br><span class="line">        log.warn(<span class="string">&quot;Redis 异常，降级直接入库: &#123;&#125;&quot;</span>, e.getMessage());</span><br><span class="line">        createAlarmRecord(deviceSn, alarmType, value, threshold);</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>数据库写入加了重试，最多 3 次，延迟递增：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="type">boolean</span> <span class="title function_">insertWithRetry</span><span class="params">(String deviceSn, String alarmType,</span></span><br><span class="line"><span class="params">                                Long value, Long threshold)</span> &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">1</span>; i &lt;= <span class="number">3</span>; i++) &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="type">IotAlarm</span> <span class="variable">alarm</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">IotAlarm</span>();</span><br><span class="line">            alarm.setDeviceSn(deviceSn);</span><br><span class="line">            alarm.setAlarmType(alarmType);</span><br><span class="line">            alarm.setAlarmValue(value);</span><br><span class="line">            alarm.setThresholdValue(threshold);</span><br><span class="line">            alarm.setAlarmTime(<span class="keyword">new</span> <span class="title class_">Date</span>());</span><br><span class="line">            alarm.setStatus(<span class="number">0L</span>);</span><br><span class="line"></span><br><span class="line">            iotAlarmService.insertIotAlarm(alarm);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (alarm.getId() != <span class="literal">null</span>) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            log.warn(<span class="string">&quot;第&#123;&#125;次写入失败: &#123;&#125;&quot;</span>, i, e.getMessage());</span><br><span class="line">            <span class="keyword">if</span> (i &lt; <span class="number">3</span>) &#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    Thread.sleep(<span class="number">100L</span> * i);</span><br><span class="line">                &#125; <span class="keyword">catch</span> (InterruptedException ie) &#123;</span><br><span class="line">                    Thread.currentThread().interrupt();</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="几个实际考虑"><a href="#几个实际考虑" class="headerlink" title="几个实际考虑"></a>几个实际考虑</h2><p><strong>为什么不用数据库唯一索引？</strong></p>
+<p>可以加，但不太够用。IoT 场景写入量大，唯一索引冲突会触发数据库回滚，开销不小。而且告警有状态流转（活跃→已恢复），唯一索引不好表达”同一时刻只能有一个活跃告警”这个业务语义。Redis 锁把并发控制和数据存储分开，各干各的，更轻量。</p>
+<p><strong>重试 3 次够吗？</strong></p>
+<p>够用了。1 次基本拦不住网络抖动，无限重试会拖垮线程池。3 次 + 递增延迟，既能覆盖大多数瞬时故障，又不会阻塞太久。</p>
+<p><strong>Redis 挂了怎么办？</strong></p>
+<p>代码里 catch 了 Redis 异常，直接降级写库。这时候可能又出现重复告警，但保证不丢数据。监控类系统，丢数据的后果比重复严重得多。</p>
+<h2 id="效果"><a href="#效果" class="headerlink" title="效果"></a>效果</h2><p>上线后重复告警归零。Redis 和数据库的一致性通过回滚机制兜底，偶发的数据库瞬时故障也能自愈。</p>
+<p>这套东西不复杂，核心就三点：</p>
+<ol>
+<li><code>setIfAbsent</code> 原子加锁，解决并发重复</li>
+<li>数据库失败时删 Redis key，避免假状态</li>
+<li>Redis 异常时降级写库，保证可用性</li>
+</ol>
+<p>适合 IoT、监控、上报这类高并发、写多读少的场景。</p>
+</div>
+
+  <footer class="wrap post__foot">
+    
+      <div class="post__tags">
+        <a class="pill pill--link" href="/tags/Redis/">Redis</a><a class="pill pill--link" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/">分布式</a><a class="pill pill--link" href="/tags/%E9%AB%98%E5%B9%B6%E5%8F%91/">高并发</a>
+      </div>
+    
+
+    
+      <section class="series-nav" aria-label="Series">
+        <p class="series-nav__label">Series</p>
+        <a class="series-nav__title" href="/series/%E9%93%81%E8%B7%AF%E9%9A%90%E8%94%BD%E5%B7%A5%E7%A8%8B%E7%9B%91%E6%B5%8B%E5%B9%B3%E5%8F%B0%E5%BC%80%E5%8F%91%E6%97%A5%E5%BF%97/">铁路隐蔽工程监测平台开发日志<span class="item__arrow" aria-hidden="true">→</span></a>
+        
+<ol class="series-list">
+  
+    <li class="series-list__item is-current">
+      
+        <span class="series-list__link">
+          <span class="series-list__n">1</span>
+          <span class="series-list__title">IoT 重复告警与 Redis 分布式锁实践</span>
+        </span>
+      
+    </li>
+  
+</ol>
+
+      </section>
+    
+
+    
+
+    
+      <nav class="nextprev" aria-label="Archive">
+        
+          <a class="nextprev__card" href="/2026/05/02/tmp-preview-b/" rel="prev">
+            <span class="nextprev__label"><span aria-hidden="true">←</span> Newer post</span>
+            <span class="nextprev__title">我把编辑器配置删光之后</span>
+          </a>
+        
+
+        
+          <a class="nextprev__card nextprev__card--r" href="/2025/11/11/tmp-preview-c/" rel="next">
+            <span class="nextprev__label">Older post <span aria-hidden="true">→</span></span>
+            <span class="nextprev__title">读《Thinking in Systems》</span>
+          </a>
+        
+      </nav>
+    
+  </footer>
+</article>
+
+
+
+
+
+</main>
+
+  
+<footer class="foot">
+  <div class="wrap foot__in">
+    <div class="foot__left">
+      
+      <p class="foot__copy">© 2026 xiincs</p>
+    </div>
+
+    <div class="foot__right">
+      
+        <a class="foot__link" href="https://github.com/xiincs" target="_blank" rel="noopener noreferrer">GitHub</a>
+      
+      
+        <a class="foot__link foot__link--dim" href="https://hexo.io" target="_blank" rel="noopener noreferrer">Hexo</a>
+      
+    </div>
+  </div>
+</footer>
+
+
+  
+    <button class="totop" id="totop" type="button" aria-label="Back to top">
+      <svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true" focusable="false">
+        <path d="M8 3.6l5.2 5.2-1.1 1.1L8.8 6.8V13h-1.6V6.8L3.9 9.9 2.8 8.8z" fill="currentColor"/>
+      </svg>
+    </button>
+  
+
+  
+    
+<div class="shortcuts" id="shortcuts" aria-hidden="true">
+  <p class="shortcuts__label">Shortcuts</p>
+  <ul class="shortcuts__list">
+    <li><kbd>Shift</kbd><span>+</span><kbd>T</kbd><span class="shortcuts__text">Toggle theme</span></li>
+    <li><kbd>Shift</kbd><span>+</span><kbd>H</kbd><span class="shortcuts__text">Go home</span></li>
+    <li><kbd>Shift</kbd><span>+</span><kbd>R</kbd><span class="shortcuts__text">Random post</span></li>
+  </ul>
+</div>
+
+  
+
+  
+    <script type="application/json" id="post-index">["/2026/04/07/iot-duplicate-alert-redis-distributed-lock/","/2025/11/11/tmp-preview-c/","/2026/05/02/tmp-preview-b/","/2026/08/05/vision-skill-routing-retrospective/"]</script>
+  
+
+  <script src="/js/main.js" defer></script>
+</body>
+</html>

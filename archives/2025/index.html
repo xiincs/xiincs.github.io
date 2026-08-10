@@ -13,7 +13,7 @@
   <script>
     (function () {
       var root = document.documentElement;
-      var key  = 'quiet-theme';
+      var key  = 'idyll-theme';
 
       root.classList.add('js');
 
@@ -57,7 +57,7 @@
           } catch (err) {}
 
           
-          document.dispatchEvent(new CustomEvent('quiet:theme', { detail: mode || 'auto' }));
+          document.dispatchEvent(new CustomEvent('idyll:theme', { detail: mode || 'auto' }));
         }
 
         btn.addEventListener('click', function () {
@@ -103,7 +103,7 @@
 
 <meta name="generator" content="Hexo 8.1.2"></head>
 
-<body data-quiet="copy anchor ext toc shortcut"
+<body data-idyll="copy anchor ext toc shortcut"
       data-copy="Copy"
       data-copied="Copied"
       data-copyfail="Press Ctrl+C"
@@ -134,6 +134,9 @@
         
           <a class="nav__link"
              href="/tags/">Tags</a>
+        
+          <a class="nav__link"
+             href="/series/">Series</a>
         
           <a class="nav__link"
              href="/about/">About</a>
@@ -175,7 +178,7 @@
 <section class="wrap page-head">
   <p class="page-head__kicker">Archive</p>
   <h1 class="page-head__title">2025</h1>
-  <p class="page-head__meta">2 posts</p>
+  <p class="page-head__meta">1 post</p>
 </section>
 
 <section class="wrap">
@@ -203,24 +206,6 @@
           
             <div class="item__tags">
               <span class="pill">系统</span><span class="pill">阅读</span>
-            </div>
-          
-        </div>
-      </a>
-    
-
-      <a class="item" href="/2025/08/27/tmp-preview-d/">
-        <time class="item__date" datetime="2025-08-27T06:05:00.000Z">08-27</time>
-
-        <div class="item__body">
-          <h2 class="item__title">一次没有必要的重构<span class="item__arrow" aria-hidden="true">→</span></h2>
-
-          
-          <p class="item__desc">花了三周把一个能跑的模块改成了「更干净」的样子，然后发现没有人需要它变干净。</p>
-
-          
-            <div class="item__tags">
-              <span class="pill">复盘</span><span class="pill">重构</span>
             </div>
           
         </div>
@@ -276,7 +261,7 @@
   
 
   
-    <script type="application/json" id="post-index">["/2026/06/11/hello-world/","/2026/07/18/tmp-preview-a/","/2026/05/02/tmp-preview-b/","/2025/08/27/tmp-preview-d/","/2025/11/11/tmp-preview-c/","/2026/08/05/vision-skill-routing-retrospective/"]</script>
+    <script type="application/json" id="post-index">["/2026/04/07/iot-duplicate-alert-redis-distributed-lock/","/2025/11/11/tmp-preview-c/","/2026/05/02/tmp-preview-b/","/2026/08/05/vision-skill-routing-retrospective/"]</script>
   
 
   <script src="/js/main.js" defer></script>

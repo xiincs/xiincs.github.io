@@ -13,7 +13,7 @@
   <script>
     (function () {
       var root = document.documentElement;
-      var key  = 'quiet-theme';
+      var key  = 'idyll-theme';
 
       root.classList.add('js');
 
@@ -57,7 +57,7 @@
           } catch (err) {}
 
           
-          document.dispatchEvent(new CustomEvent('quiet:theme', { detail: mode || 'auto' }));
+          document.dispatchEvent(new CustomEvent('idyll:theme', { detail: mode || 'auto' }));
         }
 
         btn.addEventListener('click', function () {
@@ -92,7 +92,7 @@
 <meta property="og:description" content="xiin’s blog">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2026-05-02T01:00:00.000Z">
-<meta property="article:modified_time" content="2026-08-03T16:19:59.277Z">
+<meta property="article:modified_time" content="2026-08-10T07:44:47.668Z">
 <meta property="article:author" content="xiincs">
 <meta property="article:tag" content="效率">
 <meta property="article:tag" content="编辑器">
@@ -107,7 +107,7 @@
 
 <meta name="generator" content="Hexo 8.1.2"></head>
 
-<body data-quiet="copy anchor ext toc shortcut"
+<body data-idyll="copy anchor ext toc shortcut"
       data-copy="Copy"
       data-copied="Copied"
       data-copyfail="Press Ctrl+C"
@@ -140,6 +140,9 @@
         
           <a class="nav__link"
              href="/tags/">Tags</a>
+        
+          <a class="nav__link"
+             href="/series/">Series</a>
         
           <a class="nav__link"
              href="/about/">About</a>
@@ -201,7 +204,7 @@
       
       
         <span class="dot" aria-hidden="true">·</span>
-        <span>Updated 2026-08-04</span>
+        <span>Updated 2026-08-10</span>
       
     </div>
   </header>
@@ -230,18 +233,20 @@
     
 
     
+
+    
       <nav class="nextprev" aria-label="Archive">
         
-          <a class="nextprev__card" href="/2026/06/11/hello-world/" rel="prev">
+          <a class="nextprev__card" href="/2026/08/05/vision-skill-routing-retrospective/" rel="prev">
             <span class="nextprev__label"><span aria-hidden="true">←</span> Newer post</span>
-            <span class="nextprev__title">Hello World</span>
+            <span class="nextprev__title">折腾 6 版之后，Vision Skill 路由终于能用了</span>
           </a>
         
 
         
-          <a class="nextprev__card nextprev__card--r" href="/2025/11/11/tmp-preview-c/" rel="next">
+          <a class="nextprev__card nextprev__card--r" href="/2026/04/07/iot-duplicate-alert-redis-distributed-lock/" rel="next">
             <span class="nextprev__label">Older post <span aria-hidden="true">→</span></span>
-            <span class="nextprev__title">读《Thinking in Systems》</span>
+            <span class="nextprev__title">IoT 重复告警与 Redis 分布式锁实践</span>
           </a>
         
       </nav>
@@ -297,7 +302,7 @@
   
 
   
-    <script type="application/json" id="post-index">["/2026/06/11/hello-world/","/2026/07/18/tmp-preview-a/","/2026/05/02/tmp-preview-b/","/2025/08/27/tmp-preview-d/","/2025/11/11/tmp-preview-c/","/2026/08/05/vision-skill-routing-retrospective/"]</script>
+    <script type="application/json" id="post-index">["/2026/04/07/iot-duplicate-alert-redis-distributed-lock/","/2025/11/11/tmp-preview-c/","/2026/05/02/tmp-preview-b/","/2026/08/05/vision-skill-routing-retrospective/"]</script>
   
 
   <script src="/js/main.js" defer></script>

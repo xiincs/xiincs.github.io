@@ -13,7 +13,7 @@
   <script>
     (function () {
       var root = document.documentElement;
-      var key  = 'quiet-theme';
+      var key  = 'idyll-theme';
 
       root.classList.add('js');
 
@@ -57,7 +57,7 @@
           } catch (err) {}
 
           
-          document.dispatchEvent(new CustomEvent('quiet:theme', { detail: mode || 'auto' }));
+          document.dispatchEvent(new CustomEvent('idyll:theme', { detail: mode || 'auto' }));
         }
 
         btn.addEventListener('click', function () {
@@ -79,22 +79,22 @@
     })();
   </script>
 
-  <title>缓存 · xiincs</title>
+  <title>xiincs</title>
   <meta name="description" content="xiin’s blog">
   <meta name="author" content="xiincs">
   
 
   <meta name="description" content="xiin’s blog">
 <meta property="og:type" content="website">
-<meta property="og:title" content="缓存 · xiincs">
-<meta property="og:url" content="https://xiincs.github.io/tags/%E7%BC%93%E5%AD%98/index.html">
+<meta property="og:title" content="xiincs">
+<meta property="og:url" content="https://xiincs.github.io/series/Claude-Code-Vision-Skill-%E5%BC%80%E5%8F%91%E6%97%A5%E5%BF%97/index.html">
 <meta property="og:site_name" content="xiincs">
 <meta property="og:description" content="xiin’s blog">
 <meta property="og:locale" content="en_US">
 <meta property="article:author" content="xiincs">
 <meta name="twitter:card" content="summary">
   
-  <link rel="canonical" href="https://xiincs.github.io/tags/%E7%BC%93%E5%AD%98/index.html">
+  <link rel="canonical" href="https://xiincs.github.io/series/Claude-Code-Vision-Skill-%E5%BC%80%E5%8F%91%E6%97%A5%E5%BF%97/index.html">
   <link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
   
 
@@ -103,7 +103,7 @@
 
 <meta name="generator" content="Hexo 8.1.2"></head>
 
-<body data-quiet="copy anchor ext toc shortcut"
+<body data-idyll="copy anchor ext toc shortcut"
       data-copy="Copy"
       data-copied="Copied"
       data-copyfail="Press Ctrl+C"
@@ -132,8 +132,11 @@
           <a class="nav__link"
              href="/categories/">Categories</a>
         
+          <a class="nav__link"
+             href="/tags/">Tags</a>
+        
           <a class="nav__link is-on"
-             href="/tags/" aria-current=&#34;page&#34;>Tags</a>
+             href="/series/" aria-current=&#34;page&#34;>Series</a>
         
           <a class="nav__link"
              href="/about/">About</a>
@@ -173,45 +176,25 @@
   <main class="main" id="main">
 
 <section class="wrap page-head">
-  <p class="page-head__kicker">tagged</p>
-  <h1 class="page-head__title">缓存</h1>
+  <p class="page-head__kicker">in series</p>
+  <h1 class="page-head__title">Claude Code Vision Skill 开发日志</h1>
   <p class="page-head__meta">1 post</p>
 </section>
 
 <section class="wrap">
   
-
-
-
-  <div class="list">
-    
-      <div class="year">
-        <span class="year__n">2026</span>
-        <span class="year__rule"></span>
-      </div>
-    
-
-      <a class="item" href="/2026/07/18/tmp-preview-a/">
-        <time class="item__date" datetime="2026-07-18T02:20:00.000Z">07-18</time>
-
-        <div class="item__body">
-          <h2 class="item__title">关于缓存失效，我踩过的三个坑<span class="item__arrow" aria-hidden="true">→</span></h2>
-
-          
-          <p class="item__desc">命名和缓存失效是计算机科学里的两大难题。前者只是难看，后者会真的把线上打挂。</p>
-
-          
-            <div class="item__tags">
-              <span class="pill">缓存</span><span class="pill">后端</span><span class="pill">复盘</span>
-            </div>
-          
-        </div>
-      </a>
-    
-  </div>
-
-
+<ol class="series-list">
   
+    <li class="series-list__item">
+      
+        <a class="series-list__link" href="/2026/08/05/vision-skill-routing-retrospective/">
+          <span class="series-list__n">1</span>
+          <span class="series-list__title">折腾 6 版之后，Vision Skill 路由终于能用了<span class="item__arrow" aria-hidden="true">→</span></span>
+        </a>
+      
+    </li>
+  
+</ol>
 
 </section>
 </main>
@@ -258,7 +241,7 @@
   
 
   
-    <script type="application/json" id="post-index">["/2026/06/11/hello-world/","/2026/07/18/tmp-preview-a/","/2026/05/02/tmp-preview-b/","/2025/08/27/tmp-preview-d/","/2025/11/11/tmp-preview-c/","/2026/08/05/vision-skill-routing-retrospective/"]</script>
+    <script type="application/json" id="post-index">["/2026/04/07/iot-duplicate-alert-redis-distributed-lock/","/2025/11/11/tmp-preview-c/","/2026/05/02/tmp-preview-b/","/2026/08/05/vision-skill-routing-retrospective/"]</script>
   
 
   <script src="/js/main.js" defer></script>

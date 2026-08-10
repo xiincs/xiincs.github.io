@@ -13,7 +13,7 @@
   <script>
     (function () {
       var root = document.documentElement;
-      var key  = 'quiet-theme';
+      var key  = 'idyll-theme';
 
       root.classList.add('js');
 
@@ -57,7 +57,7 @@
           } catch (err) {}
 
           
-          document.dispatchEvent(new CustomEvent('quiet:theme', { detail: mode || 'auto' }));
+          document.dispatchEvent(new CustomEvent('idyll:theme', { detail: mode || 'auto' }));
         }
 
         btn.addEventListener('click', function () {
@@ -103,7 +103,7 @@
 
 <meta name="generator" content="Hexo 8.1.2"></head>
 
-<body data-quiet="copy anchor ext toc shortcut"
+<body data-idyll="copy anchor ext toc shortcut"
       data-copy="Copy"
       data-copied="Copied"
       data-copyfail="Press Ctrl+C"
@@ -134,6 +134,9 @@
         
           <a class="nav__link"
              href="/tags/">Tags</a>
+        
+          <a class="nav__link"
+             href="/series/">Series</a>
         
           <a class="nav__link"
              href="/about/">About</a>
@@ -182,7 +185,7 @@
       <p class="hero__sub" style="animation-delay:60ms">关于代码、工具，以及一些还没想明白的日常。</p>
 
       <p class="hero__stats" style="animation-delay:120ms">
-        <span class="stat-n" data-count="6">0</span> posts · <span class="stat-n" data-count="3">0</span> categories · <span class="stat-n" data-count="343">0</span> days running · <span class="stat-n" data-count="3024">0</span> words
+        <span class="stat-n" data-count="4">0</span> posts · <span class="stat-n" data-count="3">0</span> categories · <span class="stat-n" data-count="272">0</span> days running
       </p>
 
       
@@ -190,13 +193,9 @@
           
             <span class="hero__rhythm-dot" style="left:0.00%"></span>
           
-            <span class="hero__rhythm-dot" style="left:22.26%"></span>
+            <span class="hero__rhythm-dot" style="left:54.90%"></span>
           
-            <span class="hero__rhythm-dot" style="left:72.27%"></span>
-          
-            <span class="hero__rhythm-dot" style="left:84.06%"></span>
-          
-            <span class="hero__rhythm-dot" style="left:94.75%"></span>
+            <span class="hero__rhythm-dot" style="left:64.44%"></span>
           
             <span class="hero__rhythm-dot" style="left:100.00%"></span>
           
@@ -214,18 +213,18 @@
           <a class="cat-card" href="/categories/%E5%B7%A5%E7%A8%8B%E7%AC%94%E8%AE%B0/" style="animation-delay:140ms">
             <span class="cat-card__deco" aria-hidden="true">工</span>
             <span class="cat-card__name">工程笔记</span>
-            <span class="cat-card__n">3 posts</span>
+            <span class="cat-card__n">2 posts</span>
           </a>
         
-          <a class="cat-card" href="/categories/%E5%B7%A5%E5%85%B7/" style="animation-delay:190ms">
-            <span class="cat-card__deco" aria-hidden="true">工</span>
-            <span class="cat-card__name">工具</span>
+          <a class="cat-card" href="/categories/%E8%AF%BB%E4%B9%A6/" style="animation-delay:190ms">
+            <span class="cat-card__deco" aria-hidden="true">读</span>
+            <span class="cat-card__name">读书</span>
             <span class="cat-card__n">1 post</span>
           </a>
         
-          <a class="cat-card" href="/categories/%E8%AF%BB%E4%B9%A6/" style="animation-delay:240ms">
-            <span class="cat-card__deco" aria-hidden="true">读</span>
-            <span class="cat-card__name">读书</span>
+          <a class="cat-card" href="/categories/%E5%B7%A5%E5%85%B7/" style="animation-delay:240ms">
+            <span class="cat-card__deco" aria-hidden="true">工</span>
+            <span class="cat-card__name">工具</span>
             <span class="cat-card__n">1 post</span>
           </a>
         
@@ -250,7 +249,7 @@
     
 
       <a class="item" href="/2026/08/05/vision-skill-routing-retrospective/">
-        <time class="item__date" datetime="2026-08-05T02:43:53.064Z">08-05</time>
+        <time class="item__date" datetime="2026-08-04T16:00:00.000Z">08-05</time>
 
         <div class="item__body">
           <h2 class="item__title">折腾 6 版之后，Vision Skill 路由终于能用了<span class="item__arrow" aria-hidden="true">→</span></h2>
@@ -262,38 +261,6 @@
             <div class="item__tags">
               <span class="pill">开源</span><span class="pill">skill</span><span class="pill">claude code</span>
             </div>
-          
-        </div>
-      </a>
-    
-
-      <a class="item" href="/2026/07/18/tmp-preview-a/">
-        <time class="item__date" datetime="2026-07-18T02:20:00.000Z">07-18</time>
-
-        <div class="item__body">
-          <h2 class="item__title">关于缓存失效，我踩过的三个坑<span class="item__arrow" aria-hidden="true">→</span></h2>
-
-          
-          <p class="item__desc">命名和缓存失效是计算机科学里的两大难题。前者只是难看，后者会真的把线上打挂。</p>
-
-          
-            <div class="item__tags">
-              <span class="pill">缓存</span><span class="pill">后端</span><span class="pill">复盘</span>
-            </div>
-          
-        </div>
-      </a>
-    
-
-      <a class="item" href="/2026/06/11/hello-world/">
-        <time class="item__date" datetime="2026-06-11T11:26:42.838Z">06-11</time>
-
-        <div class="item__body">
-          <h2 class="item__title">Hello World<span class="item__arrow" aria-hidden="true">→</span></h2>
-
-          
-          <p class="item__desc">Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when…</p>
-
           
         </div>
       </a>
@@ -311,6 +278,24 @@
           
             <div class="item__tags">
               <span class="pill">编辑器</span><span class="pill">效率</span>
+            </div>
+          
+        </div>
+      </a>
+    
+
+      <a class="item" href="/2026/04/07/iot-duplicate-alert-redis-distributed-lock/">
+        <time class="item__date" datetime="2026-04-06T16:00:00.000Z">04-07</time>
+
+        <div class="item__body">
+          <h2 class="item__title">IoT 重复告警与 Redis 分布式锁实践<span class="item__arrow" aria-hidden="true">→</span></h2>
+
+          
+          <p class="item__desc">在铁路隐蔽工程智能监测系统中，设备传感器数据上报频率较高时，会出现同一设备的同类型告警被重复创建的问题。这导致告警记录冗余，影响系统的可靠性和用户体验。</p>
+
+          
+            <div class="item__tags">
+              <span class="pill">Redis</span><span class="pill">分布式</span><span class="pill">高并发</span>
             </div>
           
         </div>
@@ -334,24 +319,6 @@
           
             <div class="item__tags">
               <span class="pill">系统</span><span class="pill">阅读</span>
-            </div>
-          
-        </div>
-      </a>
-    
-
-      <a class="item" href="/2025/08/27/tmp-preview-d/">
-        <time class="item__date" datetime="2025-08-27T06:05:00.000Z">08-27</time>
-
-        <div class="item__body">
-          <h2 class="item__title">一次没有必要的重构<span class="item__arrow" aria-hidden="true">→</span></h2>
-
-          
-          <p class="item__desc">花了三周把一个能跑的模块改成了「更干净」的样子，然后发现没有人需要它变干净。</p>
-
-          
-            <div class="item__tags">
-              <span class="pill">复盘</span><span class="pill">重构</span>
             </div>
           
         </div>
@@ -407,7 +374,7 @@
   
 
   
-    <script type="application/json" id="post-index">["/2026/06/11/hello-world/","/2026/07/18/tmp-preview-a/","/2026/05/02/tmp-preview-b/","/2025/08/27/tmp-preview-d/","/2025/11/11/tmp-preview-c/","/2026/08/05/vision-skill-routing-retrospective/"]</script>
+    <script type="application/json" id="post-index">["/2026/04/07/iot-duplicate-alert-redis-distributed-lock/","/2025/11/11/tmp-preview-c/","/2026/05/02/tmp-preview-b/","/2026/08/05/vision-skill-routing-retrospective/"]</script>
   
 
   <script src="/js/main.js" defer></script>

@@ -928,6 +928,18 @@ button { font: inherit; color: inherit; }
 
 .prose strong { font-weight: 600; }
 
+/* 正文里的 #标签：纯展示性标注，跟 .pill（footer 的文章元数据 tag）区分开 ——
+   嵌在行文里，不是独立于正文之外的一块，所以用文字级的底色 + 着色，不用 pill 的描边 */
+.inline-tag {
+  padding: .1em .45em;
+  border-radius: .4em;
+  background: var(--accent-wash);
+  color: var(--accent);
+  font-size: .92em;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
 .prose ul, .prose ol { padding-left: 1.35em; }
 .prose li + li { margin-top: .4em; }
 .prose li::marker { color: var(--text-3); }

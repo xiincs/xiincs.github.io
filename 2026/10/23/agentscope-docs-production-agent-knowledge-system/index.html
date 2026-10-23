@@ -195,7 +195,7 @@
       <time datetime="2026-10-23T03:13:00.000Z"><span class="sr-only">Posted on </span>2026-10-23</time>
       
         <span class="dot" aria-hidden="true">·</span>
-        <span>2,207 words</span>
+        <span>2,194 words</span>
       
       
         <span class="dot" aria-hidden="true">·</span>
@@ -266,13 +266,13 @@
 
   <div class="wrap prose" id="content"><h3 id="Agent-工程中的典型反例（demo-到生产的演进问题）"><a href="#Agent-工程中的典型反例（demo-到生产的演进问题）" class="headerlink" title="Agent 工程中的典型反例（demo 到生产的演进问题）"></a>Agent 工程中的典型反例（demo 到生产的演进问题）</h3><p>关键词：Tool、Skill、MCP</p>
 <ul>
-<li>手写 Agent 类、Tool 类（单例管理，样板代码泛滥） #业务</li>
-<li>手动搭建基础设施（会话持久化、上下文压缩、SSE 协议适配、HITL 框架） #基建</li>
-<li>配置硬编码（Prompt、MCP Server URL 等），无法统一管控与动态调整；缺少审计日志、版本快照与灰度机制，无法 A&#x2F;B 测试或灰度发布，优化效果无法量化，风险不可控 #配置</li>
-<li>Tool 与 Skill 无法动态编排 #Tool #Skill</li>
-<li>MCP  每次调用工具都重新建立连接，缺乏连接池管理，高并发下易拖垮 MCP Server #MCP</li>
-<li>权限控制与审计缺失，用户身份只在 Session 层标识，没有透传至下游工具或 MCP 调用中，所有操作均以应用服务身份执行 #Tool </li>
-<li>HITL 人工确认逻辑分散、不可靠 #Tool</li>
+<li>手写 Agent 类、Tool 类（单例管理，样板代码泛滥） <span class="inline-tag">#业务</span></li>
+<li>手动搭建基础设施（会话持久化、上下文压缩、SSE 协议适配、HITL 框架） <span class="inline-tag">#基建</span></li>
+<li>配置硬编码（Prompt、MCP Server URL 等），无法统一管控与动态调整；缺少审计日志、版本快照与灰度机制，无法 A/B 测试或灰度发布，优化效果无法量化，风险不可控 <span class="inline-tag">#配置</span></li>
+<li>Tool 与 Skill 无法动态编排 <span class="inline-tag">#Tool</span> <span class="inline-tag">#Skill</span></li>
+<li>MCP  每次调用工具都重新建立连接，缺乏连接池管理，高并发下易拖垮 MCP Server <span class="inline-tag">#MCP</span></li>
+<li>权限控制与审计缺失，用户身份只在 Session 层标识，没有透传至下游工具或 MCP 调用中，所有操作均以应用服务身份执行 <span class="inline-tag">#Tool</span> </li>
+<li>HITL 人工确认逻辑分散、不可靠 <span class="inline-tag">#Tool</span></li>
 </ul>
 <h3 id="AgentScope-体系"><a href="#AgentScope-体系" class="headerlink" title="AgentScope 体系"></a>AgentScope 体系</h3><h4 id="三层架构框架"><a href="#三层架构框架" class="headerlink" title="三层架构框架"></a>三层架构框架</h4><p>三层能力：模型层、ReAct推理循环层、对外抽象体系层</p>
 <h4 id="核心模块"><a href="#核心模块" class="headerlink" title="核心模块"></a>核心模块</h4><p>消息与事件、智能体、模型、上下文管理、工具、计划模式、流水线、标准作业流程、权限系统、中间件、RAG、长期记忆、工作区、实时语音智能体、终端UI、A2A协议</p>
@@ -307,12 +307,12 @@
 </li>
 <li>上下文压缩</li>
 <li>上下文卸载：把智能体从上下文移除的内容（被压缩的消息、被截断的工具输出）写入外部存储，方便通过文件工具（Read、Grep、Glob）回查。<ul>
-<li>工作区卸载：sessions&#x2F;{session_id}&#x2F;context.jsonl、tool_result-{tool_id}.txt、data&#x2F;{sha256}.png、skills&#x2F;</li>
+<li>工作区卸载：sessions/{session_id}/context.jsonl、tool_result-{tool_id}.txt、data/{sha256}.png、skills/</li>
 </ul>
 </li>
 </ul>
 <h3 id="4-工具"><a href="#4-工具" class="headerlink" title="4-工具"></a>4-工具</h3><p>Glob：按文件名搜索<br>Grep：按文件内容搜索<br>Bash：执行 shell 命令、PowerShell：windows 上的对应工具</p>
-<p>文件工具强制先读后写：Write 和 Edit 要先 Read，保证智能体总是基于最新内容进行操作。<br>Read 文本会使用 offset &#x2F; limit 分页，返回带行号的 textBlock，图片以 base64 返回。<br>Edit 原理是替换文件中的精确字符串，当 old_string 找不到或不唯一时失败。</p>
+<p>文件工具强制先读后写：Write 和 Edit 要先 Read，保证智能体总是基于最新内容进行操作。<br>Read 文本会使用 offset / limit 分页，返回带行号的 textBlock，图片以 base64 返回。<br>Edit 原理是替换文件中的精确字符串，当 old_string 找不到或不唯一时失败。</p>
 <p><strong>MCP (Model Context Protocol)</strong>：<br>有状态：传输协议 stdio 或 http，是持久会话，需要显式 connect() 或 close()<br>无状态：传输协议http，每次调用临时建会话，无需生命周期管理</p>
 <p><strong>元工具</strong>：是一种让智能体在运行时自主管理自己可用工具的工具，把工具分组，激活相关工具组，保持上下文聚焦。调用 reset_tools 来开关工具组，reset_tools 的输入 表示所有工具组的最终状态，是整体覆盖。basic 工具（Read 等）不受影响。</p>
 <h4 id="权限系统"><a href="#权限系统" class="headerlink" title="权限系统"></a>权限系统</h4><p>五种权限模式：</p>
@@ -324,7 +324,7 @@
 <li>DONT_ASK：ACCEPT_EDITS 的无人值守版本，任何原来需要询问用户的全转为拒绝</li>
 </ul>
 <h3 id="5-RAG-★"><a href="#5-RAG-★" class="headerlink" title="5-RAG ★"></a>5-RAG ★</h3><ul>
-<li><strong>解析器</strong>：把原始文件拆分成若干 Section 对象，每个 Section 对应文件的一个自然边界（PDF页&#x2F;PPT页&#x2F;Markdown标题段&#x2F;图片）<ul>
+<li><strong>解析器</strong>：把原始文件拆分成若干 Section 对象，每个 Section 对应文件的一个自然边界（PDF页/PPT页/Markdown标题段/图片）<ul>
 <li>文本解析器：整个文件作为一个Section，由下游切块器切分</li>
 <li>PDF解析器：每页一个 Section，元信息带 page 字段</li>
 <li>WORD解析器：按文档元素顺序遍历，相邻段落（含表格）合并为同一文本 Section，内嵌图片作为独立 DataBlock 读取（文本是 TextBlock）</li>
@@ -345,7 +345,7 @@
 <li>ElasticsearchStore：基于 es 稠密向量索引的实现，使用近似 kNN 检索</li>
 </ul>
 </li>
-<li><strong>知识库句柄</strong>：通过知识库句柄 KnowledgeBase 作为入口使用RAG，它把嵌入模型、向量数据库、Collection（用于物理隔离的表&#x2F;命名空间）、metadata_filter多租户隔离配置（可选）绑定在一起，暴露接口</li>
+<li><strong>知识库句柄</strong>：通过知识库句柄 KnowledgeBase 作为入口使用RAG，它把嵌入模型、向量数据库、Collection（用于物理隔离的表/命名空间）、metadata_filter多租户隔离配置（可选）绑定在一起，暴露接口</li>
 </ul>
 <p><strong>RAG 中间件支持两种工作模式</strong>：</p>
 <ul>
@@ -358,9 +358,9 @@
 <li><strong>Mem0</strong>：第三方开源项目，存储形式是 Qdrant 向量存储 + historyDB（一个 SQLite 数据库文件，追踪记忆条目的历史变更）</li>
 </ul>
 <h3 id="7-Agent-整体效果进化"><a href="#7-Agent-整体效果进化" class="headerlink" title="7-Agent 整体效果进化"></a>7-Agent 整体效果进化</h3><ul>
-<li>内循环：结构化保存用户对话与操作轨迹；系统定期提炼用户偏好（喜欢用表格、喜欢简洁回答…）、Case 库（典型成功案例&#x2F;典型失败案例，给外循环提供高质量数据）</li>
-<li>外循环：收集会话评价（用户点赞&#x2F;点踩、反馈）、工具调用成功率、任务完成率，结合人工标注数据，驱动 Prompt 迭代和 Skill 策略迭代</li>
-<li>A&#x2F;B实验与灰度发布<br>对 Hermes 的看法：<br>以 Skill 的创建策略为例，这更多是一种随机的变化，缺乏有效的价值验证机制，很难判断新生成的 Skill 是否真正提升了系统能力。<br>没有正向反馈的变化，只能称为扰动，而不是进化。</li>
+<li>内循环：结构化保存用户对话与操作轨迹；系统定期提炼用户偏好（喜欢用表格、喜欢简洁回答…）、Case 库（典型成功案例/典型失败案例，给外循环提供高质量数据）</li>
+<li>外循环：收集会话评价（用户点赞/点踩、反馈）、工具调用成功率、任务完成率，结合人工标注数据，驱动 Prompt 迭代和 Skill 策略迭代</li>
+<li>A/B实验与灰度发布<br>对 Hermes 的看法：<br>以 Skill 的创建策略为例，这更多是一种随机的变化，缺乏有效的价值验证机制，很难判断新生成的 Skill 是否真正提升了系统能力。<br>没有正向反馈的变化，只能称为扰动，而不是进化。</li>
 </ul>
 <h3 id="省略内容"><a href="#省略内容" class="headerlink" title="省略内容"></a>省略内容</h3><h4 id="计划模式-略"><a href="#计划模式-略" class="headerlink" title="计划模式(略)"></a>计划模式(略)</h4><h4 id="流水线"><a href="#流水线" class="headerlink" title="流水线"></a>流水线</h4><p>目标流水线：让执行者反复工作，直到验证者认可结果<br>团队流水线；由一个队长统筹多个各有专长的智能体，协作完成单个智能体难以独立完成的任务</p>
 <h4 id="标准作业流程-SOP-略"><a href="#标准作业流程-SOP-略" class="headerlink" title="标准作业流程 SOP(略)"></a>标准作业流程 SOP(略)</h4><h4 id="中间件-略"><a href="#中间件-略" class="headerlink" title="中间件(略)"></a>中间件(略)</h4><h4 id="工作区-略"><a href="#工作区-略" class="headerlink" title="工作区(略)"></a>工作区(略)</h4><h4 id="实时语音智能体-略"><a href="#实时语音智能体-略" class="headerlink" title="实时语音智能体(略)"></a>实时语音智能体(略)</h4><hr>
@@ -469,7 +469,7 @@
   
 
   
-    <script type="application/json" id="post-index">["/2026/04/07/iot-duplicate-alert-redis-distributed-lock/","/2026/05/02/tmp-preview-b/","/2025/11/11/tmp-preview-c/","/2026/08/05/vision-skill-routing-retrospective/","/2026/10/23/spec-coding/","/2026/10/23/agentscope-docs-production-agent-knowledge-system/"]</script>
+    <script type="application/json" id="post-index">["/2026/10/23/spec-coding/","/2026/04/07/iot-duplicate-alert-redis-distributed-lock/","/2026/10/23/agentscope-docs-production-agent-knowledge-system/","/2026/05/02/tmp-preview-b/","/2025/11/11/tmp-preview-c/","/2026/08/05/vision-skill-routing-retrospective/"]</script>
   
 
   <script src="/js/main.js" defer></script>

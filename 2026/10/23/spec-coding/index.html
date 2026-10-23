@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+  
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#fcfcfb" media="(prefers-color-scheme: light)" id="tc-light">
+  <meta name="theme-color" content="#171715" media="(prefers-color-scheme: dark)" id="tc-dark">
+
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var key  = 'idyll-theme';
+
+      root.classList.add('js');
+
+      var saved = null;
+      try { saved = localStorage.getItem(key); } catch (err) {}
+
+      var tcLight = document.getElementById('tc-light');
+      var tcDark  = document.getElementById('tc-dark');
+      var colors  = { light: '#fcfcfb', dark: '#171715' };
+
+      function syncChrome(mode) {
+        if (tcLight && tcDark) {
+          var c = colors[mode] || null;
+          tcLight.content = c || '#fcfcfb';
+          tcDark.content  = c || '#171715';
+        }
+      }
+
+      if (saved === 'light' || saved === 'dark') {
+        root.setAttribute('data-theme', saved);
+        syncChrome(saved);
+      }
+
+      function wire() {
+        var btn = document.getElementById('theme');
+        if (!btn) return;
+
+        var state = document.getElementById('theme-state');
+
+        function paint(mode) {
+          if (mode) root.setAttribute('data-theme', mode);
+          else root.removeAttribute('data-theme');
+
+          if (state) state.textContent = btn.getAttribute('data-' + (mode || 'auto'));
+
+          syncChrome(mode);
+
+          try {
+            if (mode) localStorage.setItem(key, mode);
+            else localStorage.removeItem(key);
+          } catch (err) {}
+
+          
+          document.dispatchEvent(new CustomEvent('idyll:theme', { detail: mode || 'auto' }));
+        }
+
+        btn.addEventListener('click', function () {
+          var cur     = root.getAttribute('data-theme') || '';
+          var sysDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          if (cur === '') paint(sysDark ? 'light' : 'dark');
+          else if (cur === 'light') paint('dark');
+          else paint('');
+        });
+
+        paint(root.getAttribute('data-theme') || '');
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', wire);
+      } else {
+        wire();
+      }
+    })();
+  </script>
+
+  <title>Spec Coding 规格驱动编码 · xiincs</title>
+  <meta name="description" content="xiin’s blog">
+  <meta name="author" content="xiincs">
+  
+
+  <meta name="description" content="xiin’s blog">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spec Coding 规格驱动编码 · xiincs">
+<meta property="og:url" content="https://xiincs.github.io/2026/10/23/spec-coding/index.html">
+<meta property="og:site_name" content="xiincs">
+<meta property="og:description" content="xiin’s blog">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2026-10-23T02:40:00.000Z">
+<meta property="article:modified_time" content="2026-10-23T03:15:31.699Z">
+<meta property="article:author" content="xiincs">
+<meta property="article:tag" content="AI编码">
+<meta property="article:tag" content="skill">
+<meta name="twitter:card" content="summary">
+  
+  <link rel="canonical" href="https://xiincs.github.io/2026/10/23/spec-coding/">
+  <link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
+  
+
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+<body data-idyll="copy anchor ext toc shortcut"
+      data-copy="Copy"
+      data-copied="Copied"
+      data-copyfail="Press Ctrl+C"
+      data-anchor="Link to this section">
+
+  
+    <div class="progress" id="progress" aria-hidden="true"><i></i></div>
+  
+
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="nav" id="nav">
+  <div class="wrap nav__in">
+    <a class="nav__brand" href="/">
+      <span class="nav__mark" aria-hidden="true"></span>
+      <span class="nav__name">xiincs</span>
+    </a>
+
+    <div class="nav__right">
+      <nav class="nav__links" aria-label="Site navigation">
+        
+          <a class="nav__link"
+             href="/">Home</a>
+        
+          <a class="nav__link"
+             href="/archives/">Archive</a>
+        
+          <a class="nav__link"
+             href="/categories/">Categories</a>
+        
+          <a class="nav__link"
+             href="/tags/">Tags</a>
+        
+          <a class="nav__link"
+             href="/series/">Series</a>
+        
+          <a class="nav__link"
+             href="/about/">About</a>
+        
+      </nav>
+
+      
+        
+        <button class="theme" id="theme" type="button"
+                data-auto="Auto"
+                data-light="Light"
+                data-dark="Dark">
+          <svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true" focusable="false">
+            <g class="theme__ico theme__ico--auto">
+              <circle cx="8" cy="8" r="5.6" fill="none" stroke="currentColor" stroke-width="1.4"/>
+              <path d="M8 2.4a5.6 5.6 0 0 0 0 11.2z" fill="currentColor"/>
+            </g>
+            <g class="theme__ico theme__ico--light"
+               fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
+              <circle cx="8" cy="8" r="3.1"/>
+              <path d="M8 1.3v1.3M8 13.4v1.3M14.7 8h-1.3M2.6 8H1.3M12.74 3.26l-.92.92M4.18 11.82l-.92.92M12.74 12.74l-.92-.92M4.18 4.18l-.92-.92"/>
+            </g>
+            <g class="theme__ico theme__ico--dark">
+              <path d="M14 8.53A6 6 0 1 1 7.47 2 4.67 4.67 0 0 0 14 8.53z"
+                    fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+            </g>
+          </svg>
+          
+          <span class="sr-only" id="theme-state" aria-live="polite">Auto</span>
+        </button>
+      
+    </div>
+  </div>
+</header>
+
+
+  <main class="main" id="main">
+
+<article class="post">
+  <header class="wrap post__head">
+    
+      <p class="post__kicker">
+        <a href="/categories/%E5%B7%A5%E7%A8%8B%E7%AC%94%E8%AE%B0/">工程笔记</a>
+      </p>
+    
+
+    <h1 class="post__title">Spec Coding 规格驱动编码</h1>
+
+    <div class="post__meta">
+      
+      <time datetime="2026-10-23T02:40:00.000Z"><span class="sr-only">Posted on </span>2026-10-23</time>
+      
+        <span class="dot" aria-hidden="true">·</span>
+        <span>603 words</span>
+      
+      
+        <span class="dot" aria-hidden="true">·</span>
+        <span>2 min read</span>
+      
+      
+    </div>
+  </header>
+
+  
+<nav class="toc" aria-label="Contents">
+  <p class="toc__label">Contents</p>
+  <ol class="toc__list">
+    
+      <li>
+        <a class="toc__link" href="#实际价值" data-toc-id="实际价值" title="实际价值">实际价值</a>
+        
+      </li>
+    
+      <li>
+        <a class="toc__link" href="#工作流-6-步" data-toc-id="工作流-6-步" title="工作流 6 步">工作流 6 步</a>
+        
+      </li>
+    
+      <li>
+        <a class="toc__link" href="#实战过程" data-toc-id="实战过程" title="实战过程">实战过程</a>
+        
+      </li>
+    
+      <li>
+        <a class="toc__link" href="#Apply-环节：面向测试编程（TDD）" data-toc-id="Apply-环节：面向测试编程（TDD）" title="Apply 环节：面向测试编程（TDD）">Apply 环节：面向测试编程（TDD）</a>
+        
+      </li>
+    
+  </ol>
+</nav>
+
+
+  <div class="wrap prose" id="content"><p>当前的共识是，AI Coding 的真正瓶颈不在于模型的逻辑能力，而在于<strong>上下文管理的失效</strong>与<strong>开发意图的模糊</strong>。</p>
+<p>提出：Spec Coding（规格驱动编码，SDD）</p>
+<p><strong>工具：OpenSpec</strong>（把模糊需求拆成清晰任务，生成 proposal、specs、design、tasks 文档）</p>
+<h3 id="实际价值"><a href="#实际价值" class="headerlink" title="实际价值"></a>实际价值</h3><ul>
+<li>减少返工（proposal 确定方向）</li>
+<li>适合复杂功能（tasks 分组聚焦）</li>
+<li>可审计（完整决策链记录，方便回溯）</li>
+</ul>
+<h3 id="工作流-6-步"><a href="#工作流-6-步" class="headerlink" title="工作流 6 步"></a>工作流 6 步</h3><ul>
+<li>Proposal 为什么做</li>
+<li>Specs 具体要求是什么</li>
+<li>Design 怎么做的技术决策</li>
+<li>Tasks 拆解成哪些实施步骤</li>
+<li>Apply 模型按 tasks 逐条实施</li>
+<li>Archive 归档</li>
+</ul>
+<h3 id="实战过程"><a href="#实战过程" class="headerlink" title="实战过程"></a>实战过程</h3><p>建议在项目根目录维护一套清晰的文档结构：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">README.md                     # 项目介绍</span><br><span class="line">AGENTS.md                     # 给 AI 编程工具阅读的项目概览和约束</span><br><span class="line">.claude/</span><br><span class="line">  rules/                      # AI 规则、电子围栏、宏命令</span><br><span class="line">docs/</span><br><span class="line">  requirements/</span><br><span class="line">    archive/                  # 已完成需求归档</span><br><span class="line">    requirename-date/         # 某次具体需求</span><br><span class="line">      require.md              # 需求描述</span><br><span class="line">      test.md                 # 测试用例与验证说明</span><br><span class="line">  PRD.md                      # 产品宏观描述，最终形态</span><br><span class="line">  CURRENT.md                  # 当前产品状态</span><br><span class="line">  ARCHITECTURE.md           # 系统架构</span><br><span class="line">  API.md                      # 项目 API 文档</span><br></pre></td></tr></table></figure>
+
+<h4 id="新项目"><a href="#新项目" class="headerlink" title="新项目"></a>新项目</h4><ol>
+<li>设计阶段：使用 AI + 设计规范 Rules，生成高保真 UI 稿 html 文件、标准的 PRD 需求描述，覆盖系统所有核心页面</li>
+<li>项目搭建：问答式交互为主，熟悉技术栈，确定项目架构。</li>
+<li>功能开发</li>
+<li>细节打磨</li>
+</ol>
+<h4 id="功能迭代-★"><a href="#功能迭代-★" class="headerlink" title="功能迭代 ★"></a>功能迭代 ★</h4><ol>
+<li>根据 PRD、CURRENT、ARCHITECTURE、API、AGENTS 生成某次需求对应的 requirename-date 文件夹，并补齐 require.md 和 test.md。</li>
+<li>执行 opsx-propose，以 requirename-date 为输入，生成 proposal.md、design.md、task.md、spec.md。</li>
+<li>执行 opsx-apply 生成代码，并依据 test.md 进行验证。</li>
+<li>需求完成后，把对应 requirename-date 目录归档。</li>
+</ol>
+<h3 id="Apply-环节：面向测试编程（TDD）"><a href="#Apply-环节：面向测试编程（TDD）" class="headerlink" title="Apply 环节：面向测试编程（TDD）"></a>Apply 环节：面向测试编程（TDD）</h3><p>TDD 遵循一个很经典的循环：</p>
+<ul>
+<li>Red：先写一个一定会失败的测试，因为功能还没实现。</li>
+<li>Green：写最少量代码，让测试通过。</li>
+<li>Refactor：在测试保护下重构代码，优化结构，去掉冗余，但不改变其行为。</li>
+</ul>
+<hr>
+<p>本文 0% AIGC。</p>
+<p><strong>参考文章：</strong><br><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/1Oi7YhMgcPp9gQAWPndXWA?scene=1&click_id=1386579405">[1] AI编程能力边界探索：基于 Claude Code 的 Spec Coding 项目实战｜得物技术</a><br><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/aHAJxvrwobUKsPZ3w7GnYw?scene=1&click_id=546110354">[2] Claude Code + OpenSpec 正在加速 AICoding 落地：从模型博弈到工程化的范式转移｜得物技术</a><br><a target="_blank" rel="noopener" href="https://xiaoba.blog/note/AI/AI%20Coding/AI%20Coding%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5%EF%BC%88codex%E4%B8%BA%E4%BE%8B%E5%AD%90%EF%BC%89">[3] 小八窝 blog | AI Coding 最佳实践（以 Codex 为例） </a></p>
+</div>
+
+  <footer class="wrap post__foot">
+    
+      <div class="post__tags">
+        <a class="pill pill--link" href="/tags/skill/">skill</a><a class="pill pill--link" href="/tags/AI%E7%BC%96%E7%A0%81/">AI编码</a>
+      </div>
+    
+
+    
+
+    
+<section class="related" aria-label="Related posts">
+  <p class="related__label">Related posts</p>
+  <ul class="related__list">
+    
+      <li>
+        <a class="related__link" href="/2026/08/05/vision-skill-routing-retrospective/">
+          <span class="related__title">折腾 6 版之后，Vision Skill 路由终于能用了<span class="item__arrow" aria-hidden="true">→</span></span>
+          <time class="related__date" datetime="2026-08-04T16:00:00.000Z">2026-08-05</time>
+        </a>
+      </li>
+    
+      <li>
+        <a class="related__link" href="/2026/10/23/agentscope-docs-production-agent-knowledge-system/">
+          <span class="related__title">AgentScope 文档精读-生产级 Agent 知识体系<span class="item__arrow" aria-hidden="true">→</span></span>
+          <time class="related__date" datetime="2026-10-23T03:13:00.000Z">2026-10-23</time>
+        </a>
+      </li>
+    
+      <li>
+        <a class="related__link" href="/2026/04/07/iot-duplicate-alert-redis-distributed-lock/">
+          <span class="related__title">IoT 重复告警与 Redis 分布式锁实践<span class="item__arrow" aria-hidden="true">→</span></span>
+          <time class="related__date" datetime="2026-04-06T16:00:00.000Z">2026-04-07</time>
+        </a>
+      </li>
+    
+  </ul>
+</section>
+
+
+    
+      <nav class="nextprev" aria-label="Archive">
+        
+          <a class="nextprev__card" href="/2026/10/23/agentscope-docs-production-agent-knowledge-system/" rel="prev">
+            <span class="nextprev__label"><span aria-hidden="true">←</span> Newer post</span>
+            <span class="nextprev__title">AgentScope 文档精读-生产级 Agent 知识体系</span>
+          </a>
+        
+
+        
+          <a class="nextprev__card nextprev__card--r" href="/2026/08/05/vision-skill-routing-retrospective/" rel="next">
+            <span class="nextprev__label">Older post <span aria-hidden="true">→</span></span>
+            <span class="nextprev__title">折腾 6 版之后，Vision Skill 路由终于能用了</span>
+          </a>
+        
+      </nav>
+    
+  </footer>
+</article>
+
+
+
+
+
+</main>
+
+  
+<footer class="foot">
+  <div class="wrap foot__in">
+    <div class="foot__left">
+      
+      <p class="foot__copy">© 2026 xiincs</p>
+    </div>
+
+    <div class="foot__right">
+      
+        <a class="foot__link" href="https://github.com/xiincs" target="_blank" rel="noopener noreferrer">GitHub</a>
+      
+      
+        <a class="foot__link foot__link--dim" href="https://hexo.io" target="_blank" rel="noopener noreferrer">Hexo</a>
+      
+    </div>
+  </div>
+</footer>
+
+
+  
+    <button class="totop" id="totop" type="button" aria-label="Back to top">
+      <svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true" focusable="false">
+        <path d="M8 3.6l5.2 5.2-1.1 1.1L8.8 6.8V13h-1.6V6.8L3.9 9.9 2.8 8.8z" fill="currentColor"/>
+      </svg>
+    </button>
+  
+
+  
+    
+<div class="shortcuts" id="shortcuts" aria-hidden="true">
+  <p class="shortcuts__label">Shortcuts</p>
+  <ul class="shortcuts__list">
+    <li><kbd>Shift</kbd><span>+</span><kbd>T</kbd><span class="shortcuts__text">Toggle theme</span></li>
+    <li><kbd>Shift</kbd><span>+</span><kbd>H</kbd><span class="shortcuts__text">Go home</span></li>
+    <li><kbd>Shift</kbd><span>+</span><kbd>R</kbd><span class="shortcuts__text">Random post</span></li>
+  </ul>
+</div>
+
+  
+
+  
+    <script type="application/json" id="post-index">["/2026/04/07/iot-duplicate-alert-redis-distributed-lock/","/2026/05/02/tmp-preview-b/","/2025/11/11/tmp-preview-c/","/2026/08/05/vision-skill-routing-retrospective/","/2026/10/23/spec-coding/","/2026/10/23/agentscope-docs-production-agent-knowledge-system/"]</script>
+  
+
+  <script src="/js/main.js" defer></script>
+</body>
+</html>

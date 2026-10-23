@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+  
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#fcfcfb" media="(prefers-color-scheme: light)" id="tc-light">
+  <meta name="theme-color" content="#171715" media="(prefers-color-scheme: dark)" id="tc-dark">
+
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var key  = 'idyll-theme';
+
+      root.classList.add('js');
+
+      var saved = null;
+      try { saved = localStorage.getItem(key); } catch (err) {}
+
+      var tcLight = document.getElementById('tc-light');
+      var tcDark  = document.getElementById('tc-dark');
+      var colors  = { light: '#fcfcfb', dark: '#171715' };
+
+      function syncChrome(mode) {
+        if (tcLight && tcDark) {
+          var c = colors[mode] || null;
+          tcLight.content = c || '#fcfcfb';
+          tcDark.content  = c || '#171715';
+        }
+      }
+
+      if (saved === 'light' || saved === 'dark') {
+        root.setAttribute('data-theme', saved);
+        syncChrome(saved);
+      }
+
+      function wire() {
+        var btn = document.getElementById('theme');
+        if (!btn) return;
+
+        var state = document.getElementById('theme-state');
+
+        function paint(mode) {
+          if (mode) root.setAttribute('data-theme', mode);
+          else root.removeAttribute('data-theme');
+
+          if (state) state.textContent = btn.getAttribute('data-' + (mode || 'auto'));
+
+          syncChrome(mode);
+
+          try {
+            if (mode) localStorage.setItem(key, mode);
+            else localStorage.removeItem(key);
+          } catch (err) {}
+
+          
+          document.dispatchEvent(new CustomEvent('idyll:theme', { detail: mode || 'auto' }));
+        }
+
+        btn.addEventListener('click', function () {
+          var cur     = root.getAttribute('data-theme') || '';
+          var sysDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          if (cur === '') paint(sysDark ? 'light' : 'dark');
+          else if (cur === 'light') paint('dark');
+          else paint('');
+        });
+
+        paint(root.getAttribute('data-theme') || '');
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', wire);
+      } else {
+        wire();
+      }
+    })();
+  </script>
+
+  <title>AgentScope 文档精读-生产级 Agent 知识体系 · xiincs</title>
+  <meta name="description" content="xiin’s blog">
+  <meta name="author" content="xiincs">
+  
+
+  <meta name="description" content="xiin’s blog">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AgentScope 文档精读-生产级 Agent 知识体系 · xiincs">
+<meta property="og:url" content="https://xiincs.github.io/2026/10/23/agentscope-docs-production-agent-knowledge-system/index.html">
+<meta property="og:site_name" content="xiincs">
+<meta property="og:description" content="xiin’s blog">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2026-10-23T03:13:00.000Z">
+<meta property="article:modified_time" content="2026-10-23T03:15:28.964Z">
+<meta property="article:author" content="xiincs">
+<meta property="article:tag" content="Agent开发">
+<meta name="twitter:card" content="summary">
+  
+  <link rel="canonical" href="https://xiincs.github.io/2026/10/23/agentscope-docs-production-agent-knowledge-system/">
+  <link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
+  
+
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+<body data-idyll="copy anchor ext toc shortcut"
+      data-copy="Copy"
+      data-copied="Copied"
+      data-copyfail="Press Ctrl+C"
+      data-anchor="Link to this section">
+
+  
+    <div class="progress" id="progress" aria-hidden="true"><i></i></div>
+  
+
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="nav" id="nav">
+  <div class="wrap nav__in">
+    <a class="nav__brand" href="/">
+      <span class="nav__mark" aria-hidden="true"></span>
+      <span class="nav__name">xiincs</span>
+    </a>
+
+    <div class="nav__right">
+      <nav class="nav__links" aria-label="Site navigation">
+        
+          <a class="nav__link"
+             href="/">Home</a>
+        
+          <a class="nav__link"
+             href="/archives/">Archive</a>
+        
+          <a class="nav__link"
+             href="/categories/">Categories</a>
+        
+          <a class="nav__link"
+             href="/tags/">Tags</a>
+        
+          <a class="nav__link"
+             href="/series/">Series</a>
+        
+          <a class="nav__link"
+             href="/about/">About</a>
+        
+      </nav>
+
+      
+        
+        <button class="theme" id="theme" type="button"
+                data-auto="Auto"
+                data-light="Light"
+                data-dark="Dark">
+          <svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true" focusable="false">
+            <g class="theme__ico theme__ico--auto">
+              <circle cx="8" cy="8" r="5.6" fill="none" stroke="currentColor" stroke-width="1.4"/>
+              <path d="M8 2.4a5.6 5.6 0 0 0 0 11.2z" fill="currentColor"/>
+            </g>
+            <g class="theme__ico theme__ico--light"
+               fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
+              <circle cx="8" cy="8" r="3.1"/>
+              <path d="M8 1.3v1.3M8 13.4v1.3M14.7 8h-1.3M2.6 8H1.3M12.74 3.26l-.92.92M4.18 11.82l-.92.92M12.74 12.74l-.92-.92M4.18 4.18l-.92-.92"/>
+            </g>
+            <g class="theme__ico theme__ico--dark">
+              <path d="M14 8.53A6 6 0 1 1 7.47 2 4.67 4.67 0 0 0 14 8.53z"
+                    fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+            </g>
+          </svg>
+          
+          <span class="sr-only" id="theme-state" aria-live="polite">Auto</span>
+        </button>
+      
+    </div>
+  </div>
+</header>
+
+
+  <main class="main" id="main">
+
+<article class="post">
+  <header class="wrap post__head">
+    
+      <p class="post__kicker">
+        <a href="/categories/%E5%B7%A5%E7%A8%8B%E7%AC%94%E8%AE%B0/">工程笔记</a>
+      </p>
+    
+
+    <h1 class="post__title">AgentScope 文档精读-生产级 Agent 知识体系</h1>
+
+    <div class="post__meta">
+      
+      <time datetime="2026-10-23T03:13:00.000Z"><span class="sr-only">Posted on </span>2026-10-23</time>
+      
+        <span class="dot" aria-hidden="true">·</span>
+        <span>2,207 words</span>
+      
+      
+        <span class="dot" aria-hidden="true">·</span>
+        <span>7 min read</span>
+      
+      
+    </div>
+  </header>
+
+  
+<nav class="toc" aria-label="Contents">
+  <p class="toc__label">Contents</p>
+  <ol class="toc__list">
+    
+      <li>
+        <a class="toc__link" href="#Agent-工程中的典型反例（demo-到生产的演进问题）" data-toc-id="Agent-工程中的典型反例（demo-到生产的演进问题）" title="Agent 工程中的典型反例（demo 到生产的演进问题）">Agent 工程中的典型反例（demo 到生产的演进问题）</a>
+        
+      </li>
+    
+      <li>
+        <a class="toc__link" href="#AgentScope-体系" data-toc-id="AgentScope-体系" title="AgentScope 体系">AgentScope 体系</a>
+        
+      </li>
+    
+      <li>
+        <a class="toc__link" href="#1-消息与事件" data-toc-id="1-消息与事件" title="1-消息与事件">1-消息与事件</a>
+        
+      </li>
+    
+      <li>
+        <a class="toc__link" href="#2-智能体运行时" data-toc-id="2-智能体运行时" title="2-智能体运行时">2-智能体运行时</a>
+        
+      </li>
+    
+      <li>
+        <a class="toc__link" href="#3-上下文管理" data-toc-id="3-上下文管理" title="3-上下文管理">3-上下文管理</a>
+        
+      </li>
+    
+      <li>
+        <a class="toc__link" href="#4-工具" data-toc-id="4-工具" title="4-工具">4-工具</a>
+        
+      </li>
+    
+      <li>
+        <a class="toc__link" href="#5-RAG-★" data-toc-id="5-RAG-★" title="5-RAG ★">5-RAG ★</a>
+        
+      </li>
+    
+      <li>
+        <a class="toc__link" href="#6-长期记忆" data-toc-id="6-长期记忆" title="6-长期记忆">6-长期记忆</a>
+        
+      </li>
+    
+      <li>
+        <a class="toc__link" href="#7-Agent-整体效果进化" data-toc-id="7-Agent-整体效果进化" title="7-Agent 整体效果进化">7-Agent 整体效果进化</a>
+        
+      </li>
+    
+      <li>
+        <a class="toc__link" href="#省略内容" data-toc-id="省略内容" title="省略内容">省略内容</a>
+        
+      </li>
+    
+  </ol>
+</nav>
+
+
+  <div class="wrap prose" id="content"><h3 id="Agent-工程中的典型反例（demo-到生产的演进问题）"><a href="#Agent-工程中的典型反例（demo-到生产的演进问题）" class="headerlink" title="Agent 工程中的典型反例（demo 到生产的演进问题）"></a>Agent 工程中的典型反例（demo 到生产的演进问题）</h3><p>关键词：Tool、Skill、MCP</p>
+<ul>
+<li>手写 Agent 类、Tool 类（单例管理，样板代码泛滥） #业务</li>
+<li>手动搭建基础设施（会话持久化、上下文压缩、SSE 协议适配、HITL 框架） #基建</li>
+<li>配置硬编码（Prompt、MCP Server URL 等），无法统一管控与动态调整；缺少审计日志、版本快照与灰度机制，无法 A&#x2F;B 测试或灰度发布，优化效果无法量化，风险不可控 #配置</li>
+<li>Tool 与 Skill 无法动态编排 #Tool #Skill</li>
+<li>MCP  每次调用工具都重新建立连接，缺乏连接池管理，高并发下易拖垮 MCP Server #MCP</li>
+<li>权限控制与审计缺失，用户身份只在 Session 层标识，没有透传至下游工具或 MCP 调用中，所有操作均以应用服务身份执行 #Tool </li>
+<li>HITL 人工确认逻辑分散、不可靠 #Tool</li>
+</ul>
+<h3 id="AgentScope-体系"><a href="#AgentScope-体系" class="headerlink" title="AgentScope 体系"></a>AgentScope 体系</h3><h4 id="三层架构框架"><a href="#三层架构框架" class="headerlink" title="三层架构框架"></a>三层架构框架</h4><p>三层能力：模型层、ReAct推理循环层、对外抽象体系层</p>
+<h4 id="核心模块"><a href="#核心模块" class="headerlink" title="核心模块"></a>核心模块</h4><p>消息与事件、智能体、模型、上下文管理、工具、计划模式、流水线、标准作业流程、权限系统、中间件、RAG、长期记忆、工作区、实时语音智能体、终端UI、A2A协议</p>
+<h4 id="智能体即服务"><a href="#智能体即服务" class="headerlink" title="智能体即服务"></a>智能体即服务</h4><p>架构、智能体团队、SOP服务、资源共享、RAG服务、工作区管理、MCP与技能中心、消息渠道、API</p>
+<h3 id="1-消息与事件"><a href="#1-消息与事件" class="headerlink" title="1-消息与事件"></a>1-消息与事件</h3><p>事件和消息是同一数据的两种视图，从事件流可以重建消息</p>
+<ul>
+<li>声明周期事件：智能体开始新回复、智能体完成回复、达到最大推理-执行迭代次数</li>
+<li>文本流式事件：新的文本块开始、增量文本内容到达、文本块完成（start → delta → end 模式）</li>
+<li>思考流式事件：start → delta → end 模式</li>
+<li>数据（二进制）流式事件：start → delta → end 模式</li>
+<li>工具调用流式事件：start → delta → end 模式</li>
+<li>工具结果流式事件：start → delta → end 模式</li>
+<li>模型调用事件：start → delta → end 模式</li>
+<li>人工介入事件：智能体暂停等待用户确认、智能体暂停等待外部执行、用户提供确认结果（输入事件）、外部系统提供执行结果（输入事件）</li>
+<li>一次性事件：HintBlockEvent（如卸载后台工具返回的结果，是一个内容注入机制，作为提示内容，会被智能体消费）、CustomEvent（传递与核心智能体流程无关的旁路信息，如任务进度，给外部订阅者看，不注入内容）</li>
+</ul>
+<h3 id="2-智能体运行时"><a href="#2-智能体运行时" class="headerlink" title="2-智能体运行时"></a>2-智能体运行时</h3><p><strong>无状态的推理-循环引擎</strong><br>主要接口：</p>
+<ul>
+<li>reply(inputs, structured_schema)：运行推理-行动循环并返回最终 Msg<ul>
+<li>inputs 参数支持：UserConfirmResultEvent（从暂停状态恢复）、ExternalExecutionResultEvent（从暂停状态恢复）、UserInterruptEvent（终止智能体）、None（继续）</li>
+</ul>
+</li>
+<li>reply_stream(inputs, structured_schema, yield_final_msg)：同上，但流式产出 AgentEvent</li>
+<li>observe(msg)：将消息添加到上下文</li>
+<li>compress_context(context_config, instructions)：压缩上下文</li>
+</ul>
+<h3 id="3-上下文管理"><a href="#3-上下文管理" class="headerlink" title="3-上下文管理"></a>3-上下文管理</h3><ul>
+<li>上下文注入：每次调用模型时，智能体把三层内容拼接输入<ul>
+<li>系统提示（基础系统提示、技能指令、on_system_prompt中间件钩子）、摘要（已压缩历史）、上下文（未压缩消息）</li>
+<li>钩子-运行时动态注入（以HintBlock形式附加，不修改系统提示，<strong>不影响缓存</strong>）：当前时间、计划任务、上下文用量、工具报错（连续n次）</li>
+</ul>
+</li>
+<li>上下文压缩</li>
+<li>上下文卸载：把智能体从上下文移除的内容（被压缩的消息、被截断的工具输出）写入外部存储，方便通过文件工具（Read、Grep、Glob）回查。<ul>
+<li>工作区卸载：sessions&#x2F;{session_id}&#x2F;context.jsonl、tool_result-{tool_id}.txt、data&#x2F;{sha256}.png、skills&#x2F;</li>
+</ul>
+</li>
+</ul>
+<h3 id="4-工具"><a href="#4-工具" class="headerlink" title="4-工具"></a>4-工具</h3><p>Glob：按文件名搜索<br>Grep：按文件内容搜索<br>Bash：执行 shell 命令、PowerShell：windows 上的对应工具</p>
+<p>文件工具强制先读后写：Write 和 Edit 要先 Read，保证智能体总是基于最新内容进行操作。<br>Read 文本会使用 offset &#x2F; limit 分页，返回带行号的 textBlock，图片以 base64 返回。<br>Edit 原理是替换文件中的精确字符串，当 old_string 找不到或不唯一时失败。</p>
+<p><strong>MCP (Model Context Protocol)</strong>：<br>有状态：传输协议 stdio 或 http，是持久会话，需要显式 connect() 或 close()<br>无状态：传输协议http，每次调用临时建会话，无需生命周期管理</p>
+<p><strong>元工具</strong>：是一种让智能体在运行时自主管理自己可用工具的工具，把工具分组，激活相关工具组，保持上下文聚焦。调用 reset_tools 来开关工具组，reset_tools 的输入 表示所有工具组的最终状态，是整体覆盖。basic 工具（Read 等）不受影响。</p>
+<h4 id="权限系统"><a href="#权限系统" class="headerlink" title="权限系统"></a>权限系统</h4><p>五种权限模式：</p>
+<ul>
+<li>DEFAULT：只读调用自动放行，其他全部询问用户</li>
+<li>ACCEPT_EDITS：只读调用、Edit、Write 和 操作文件夹的 bash 命令 自动放行，其他询问用户</li>
+<li>EXPLORE：只读</li>
+<li>BYPASS：完全信任，全部放行</li>
+<li>DONT_ASK：ACCEPT_EDITS 的无人值守版本，任何原来需要询问用户的全转为拒绝</li>
+</ul>
+<h3 id="5-RAG-★"><a href="#5-RAG-★" class="headerlink" title="5-RAG ★"></a>5-RAG ★</h3><ul>
+<li><strong>解析器</strong>：把原始文件拆分成若干 Section 对象，每个 Section 对应文件的一个自然边界（PDF页&#x2F;PPT页&#x2F;Markdown标题段&#x2F;图片）<ul>
+<li>文本解析器：整个文件作为一个Section，由下游切块器切分</li>
+<li>PDF解析器：每页一个 Section，元信息带 page 字段</li>
+<li>WORD解析器：按文档元素顺序遍历，相邻段落（含表格）合并为同一文本 Section，内嵌图片作为独立 DataBlock 读取（文本是 TextBlock）</li>
+<li>PPT解析器：按幻灯片顺序遍历形状，文本、表格合并为同一Section，图片作为独立 DataBlock 读取，元信息携带 slide 幻灯片序号字段</li>
+<li>EXCEL解析器：按工作表顺序读取，每张表的内容渲染为 markdown 或 json 文本，图片作为独立 DataBlock 读取，携带  sheet 字段</li>
+<li>图片解析器：将整张图片读取为一个 Section</li>
+</ul>
+</li>
+<li><strong>切块器</strong>：按近似 token 数进行切分，不依赖任何 tokenizer<ul>
+<li>参数：块大小、重叠大小</li>
+</ul>
+</li>
+<li><strong>嵌入模型</strong></li>
+<li><strong>向量库</strong><ul>
+<li>QdrantStore：基于 Qdrant，支持内存、磁盘、远程服务</li>
+<li>MilvusLiteStore：基于 Milvus Lite</li>
+<li>MongoDBStore：基于 MongoDB Vector Search</li>
+<li>ElasticsearchStore：基于 es 稠密向量索引的实现，使用近似 kNN 检索</li>
+</ul>
+</li>
+<li><strong>知识库句柄</strong>：通过知识库句柄 KnowledgeBase 作为入口使用RAG，它把嵌入模型、向量数据库、Collection（用于物理隔离的表&#x2F;命名空间）、metadata_filter多租户隔离配置（可选）绑定在一起，暴露接口</li>
+</ul>
+<p><strong>RAG 中间件支持两种工作模式</strong>：</p>
+<ul>
+<li><strong>static</strong>：每次 reply 的首次推理前，把输入消息作为检索关键词进行检索，检索结果被包装成 HintBlock 并注入上下文中</li>
+<li><strong>agentic</strong>：模型自主调用检索工具，检索关键词由模型自主给出</li>
+</ul>
+<h3 id="6-长期记忆"><a href="#6-长期记忆" class="headerlink" title="6-长期记忆"></a>6-长期记忆</h3><ul>
+<li><strong>ReMe</strong>：监听智能体的对话，在每次回复后通过 ReMe 的 auto_memory 任务自动提取并写回记忆。存储形式是文件型：记忆卡片 + 检索索引。支持向量检索。</li>
+<li><strong>控制模式</strong>：static_control（reply开始时后台检索，可能来不及注入） 和 agent_control （暴露工具，智能体自行决定何时搜索）</li>
+<li><strong>Mem0</strong>：第三方开源项目，存储形式是 Qdrant 向量存储 + historyDB（一个 SQLite 数据库文件，追踪记忆条目的历史变更）</li>
+</ul>
+<h3 id="7-Agent-整体效果进化"><a href="#7-Agent-整体效果进化" class="headerlink" title="7-Agent 整体效果进化"></a>7-Agent 整体效果进化</h3><ul>
+<li>内循环：结构化保存用户对话与操作轨迹；系统定期提炼用户偏好（喜欢用表格、喜欢简洁回答…）、Case 库（典型成功案例&#x2F;典型失败案例，给外循环提供高质量数据）</li>
+<li>外循环：收集会话评价（用户点赞&#x2F;点踩、反馈）、工具调用成功率、任务完成率，结合人工标注数据，驱动 Prompt 迭代和 Skill 策略迭代</li>
+<li>A&#x2F;B实验与灰度发布<br>对 Hermes 的看法：<br>以 Skill 的创建策略为例，这更多是一种随机的变化，缺乏有效的价值验证机制，很难判断新生成的 Skill 是否真正提升了系统能力。<br>没有正向反馈的变化，只能称为扰动，而不是进化。</li>
+</ul>
+<h3 id="省略内容"><a href="#省略内容" class="headerlink" title="省略内容"></a>省略内容</h3><h4 id="计划模式-略"><a href="#计划模式-略" class="headerlink" title="计划模式(略)"></a>计划模式(略)</h4><h4 id="流水线"><a href="#流水线" class="headerlink" title="流水线"></a>流水线</h4><p>目标流水线：让执行者反复工作，直到验证者认可结果<br>团队流水线；由一个队长统筹多个各有专长的智能体，协作完成单个智能体难以独立完成的任务</p>
+<h4 id="标准作业流程-SOP-略"><a href="#标准作业流程-SOP-略" class="headerlink" title="标准作业流程 SOP(略)"></a>标准作业流程 SOP(略)</h4><h4 id="中间件-略"><a href="#中间件-略" class="headerlink" title="中间件(略)"></a>中间件(略)</h4><h4 id="工作区-略"><a href="#工作区-略" class="headerlink" title="工作区(略)"></a>工作区(略)</h4><h4 id="实时语音智能体-略"><a href="#实时语音智能体-略" class="headerlink" title="实时语音智能体(略)"></a>实时语音智能体(略)</h4><hr>
+<p>本文 0% AIGC。<br><strong>参考文章：</strong><br><a target="_blank" rel="noopener" href="https://docs.agentscope.io/zh/versions/2.0.10">AgentScope 2.0.10 官方文档</a></p>
+</div>
+
+  <footer class="wrap post__foot">
+    
+      <div class="post__tags">
+        <a class="pill pill--link" href="/tags/Agent%E5%BC%80%E5%8F%91/">Agent开发</a>
+      </div>
+    
+
+    
+
+    
+<section class="related" aria-label="Related posts">
+  <p class="related__label">Related posts</p>
+  <ul class="related__list">
+    
+      <li>
+        <a class="related__link" href="/2026/10/23/spec-coding/">
+          <span class="related__title">Spec Coding 规格驱动编码<span class="item__arrow" aria-hidden="true">→</span></span>
+          <time class="related__date" datetime="2026-10-23T02:40:00.000Z">2026-10-23</time>
+        </a>
+      </li>
+    
+      <li>
+        <a class="related__link" href="/2026/08/05/vision-skill-routing-retrospective/">
+          <span class="related__title">折腾 6 版之后，Vision Skill 路由终于能用了<span class="item__arrow" aria-hidden="true">→</span></span>
+          <time class="related__date" datetime="2026-08-04T16:00:00.000Z">2026-08-05</time>
+        </a>
+      </li>
+    
+      <li>
+        <a class="related__link" href="/2026/04/07/iot-duplicate-alert-redis-distributed-lock/">
+          <span class="related__title">IoT 重复告警与 Redis 分布式锁实践<span class="item__arrow" aria-hidden="true">→</span></span>
+          <time class="related__date" datetime="2026-04-06T16:00:00.000Z">2026-04-07</time>
+        </a>
+      </li>
+    
+  </ul>
+</section>
+
+
+    
+      <nav class="nextprev" aria-label="Archive">
+        <span></span>
+
+        
+          <a class="nextprev__card nextprev__card--r" href="/2026/10/23/spec-coding/" rel="next">
+            <span class="nextprev__label">Older post <span aria-hidden="true">→</span></span>
+            <span class="nextprev__title">Spec Coding 规格驱动编码</span>
+          </a>
+        
+      </nav>
+    
+  </footer>
+</article>
+
+
+
+
+
+</main>
+
+  
+<footer class="foot">
+  <div class="wrap foot__in">
+    <div class="foot__left">
+      
+      <p class="foot__copy">© 2026 xiincs</p>
+    </div>
+
+    <div class="foot__right">
+      
+        <a class="foot__link" href="https://github.com/xiincs" target="_blank" rel="noopener noreferrer">GitHub</a>
+      
+      
+        <a class="foot__link foot__link--dim" href="https://hexo.io" target="_blank" rel="noopener noreferrer">Hexo</a>
+      
+    </div>
+  </div>
+</footer>
+
+
+  
+    <button class="totop" id="totop" type="button" aria-label="Back to top">
+      <svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true" focusable="false">
+        <path d="M8 3.6l5.2 5.2-1.1 1.1L8.8 6.8V13h-1.6V6.8L3.9 9.9 2.8 8.8z" fill="currentColor"/>
+      </svg>
+    </button>
+  
+
+  
+    
+<div class="shortcuts" id="shortcuts" aria-hidden="true">
+  <p class="shortcuts__label">Shortcuts</p>
+  <ul class="shortcuts__list">
+    <li><kbd>Shift</kbd><span>+</span><kbd>T</kbd><span class="shortcuts__text">Toggle theme</span></li>
+    <li><kbd>Shift</kbd><span>+</span><kbd>H</kbd><span class="shortcuts__text">Go home</span></li>
+    <li><kbd>Shift</kbd><span>+</span><kbd>R</kbd><span class="shortcuts__text">Random post</span></li>
+  </ul>
+</div>
+
+  
+
+  
+    <script type="application/json" id="post-index">["/2026/04/07/iot-duplicate-alert-redis-distributed-lock/","/2026/05/02/tmp-preview-b/","/2025/11/11/tmp-preview-c/","/2026/08/05/vision-skill-routing-retrospective/","/2026/10/23/spec-coding/","/2026/10/23/agentscope-docs-production-agent-knowledge-system/"]</script>
+  
+
+  <script src="/js/main.js" defer></script>
+</body>
+</html>
